@@ -2,6 +2,6 @@ PROJECT_NAME           = "Anytime pmnk-landscapes"
 PROJECT_NUMBER         = "0.1.0"
 PROJECT BRIEF          = "Anytime analysis of algorithms for the pmnk-landscapes problem"
 
-OUTPUT_DIRECTORY       = @CMAKE_CURRENT_SOURCE_DIR@/docs/documentation/
+OUTPUT_DIRECTORY       = @CMAKE_CURRENT_SOURCE_DIR@/docs/documentation
 INPUT                  = @CMAKE_CURRENT_SOURCE_DIR@/src/ @CMAKE_CURRENT_SOURCE_DIR@/docs
 RECURSIVE              = YES
