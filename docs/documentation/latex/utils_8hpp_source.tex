@@ -1,0 +1,43 @@
+\hypertarget{utils_8hpp_source}{}\doxysection{utils.\+hpp}
+\label{utils_8hpp_source}\index{/home/pedro/Documents/projects/anytime-\/pmnk-\/landscapes/src/Utils/utils.hpp@{/home/pedro/Documents/projects/anytime-\/pmnk-\/landscapes/src/Utils/utils.hpp}}
+\mbox{\hyperlink{utils_8hpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 }
+\DoxyCodeLine{13 \textcolor{preprocessor}{\#ifndef UTILS\_HPP}}
+\DoxyCodeLine{14 \textcolor{preprocessor}{\#define UTILS\_HPP}}
+\DoxyCodeLine{15 }
+\DoxyCodeLine{16 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{solution_8hpp}{solution.hpp}}"{}}}
+\DoxyCodeLine{17 }
+\DoxyCodeLine{18 \textcolor{keyword}{namespace }pmnk \{}
+\DoxyCodeLine{19 }
+\DoxyCodeLine{32 \textcolor{keyword}{template} <\textcolor{keyword}{typename} Vec, \textcolor{keyword}{typename} S>}
+\DoxyCodeLine{33 \textcolor{keywordtype}{bool} \mbox{\hyperlink{utils_8hpp_aadaca8a2331f4617d6d043b8d75606af}{add\_non\_dominated}}(Vec \&solutions, S \&\&solution) \{}
+\DoxyCodeLine{34   \textcolor{keywordflow}{for} (std::size\_t i = 0; i < solutions.size();) \{}
+\DoxyCodeLine{35     \textcolor{keyword}{auto} d = solution.dominance(solutions[i]);}
+\DoxyCodeLine{36     \textcolor{keywordflow}{if} (d == DominanceType::EQUAL) \{}
+\DoxyCodeLine{37       \textcolor{keywordflow}{if} (solution.decision\_vector() == solutions[i].decision\_vector()) \{}
+\DoxyCodeLine{38         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{39       \} \textcolor{keywordflow}{else} \{}
+\DoxyCodeLine{40         \textcolor{keywordflow}{for} (++i; i < solutions.size(); ++i) \{}
+\DoxyCodeLine{41           \textcolor{keywordflow}{if} (solution.decision\_vector() == solutions[i].decision\_vector()) \{}
+\DoxyCodeLine{42             \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{43           \}}
+\DoxyCodeLine{44         \}}
+\DoxyCodeLine{45         \textcolor{keywordflow}{break};}
+\DoxyCodeLine{46       \}}
+\DoxyCodeLine{47     \} \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (d == DominanceType::DOMINATES) \{}
+\DoxyCodeLine{48       solutions[i] = std::move(solutions.back());}
+\DoxyCodeLine{49       solutions.pop\_back();}
+\DoxyCodeLine{50     \} \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (d == DominanceType::DOMINATED) \{}
+\DoxyCodeLine{51       \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{52     \} \textcolor{keywordflow}{else} \{}
+\DoxyCodeLine{53       ++i;}
+\DoxyCodeLine{54     \}}
+\DoxyCodeLine{55   \}}
+\DoxyCodeLine{56   solutions.push\_back(std::forward<S>(solution));}
+\DoxyCodeLine{57   \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
+\DoxyCodeLine{58 \}}
+\DoxyCodeLine{59 \}  \textcolor{comment}{// namespace pmnk}}
+\DoxyCodeLine{60 \textcolor{preprocessor}{\#endif  }\textcolor{comment}{// UTILS\_HPP}}
+
+\end{DoxyCode}

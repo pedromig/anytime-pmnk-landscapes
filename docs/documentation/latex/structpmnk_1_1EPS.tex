@@ -1,0 +1,56 @@
+\hypertarget{structpmnk_1_1EPS}{}\doxysection{pmnk\+::EPS Struct Reference}
+\label{structpmnk_1_1EPS}\index{pmnk::EPS@{pmnk::EPS}}
+
+
+Additive epsilon indicator.  
+
+
+
+
+{\ttfamily \#include $<$functor.\+hpp$>$}
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{structpmnk_1_1EPS_a0f1b9b77c3cedf9100c631982041e356}\label{structpmnk_1_1EPS_a0f1b9b77c3cedf9100c631982041e356}} 
+constexpr {\bfseries EPS} ()=default
+\begin{DoxyCompactList}\small\item\em Construct a new \mbox{\hyperlink{structpmnk_1_1EPS}{EPS}} object. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename S  = GASolution$>$ }\\constexpr double \mbox{\hyperlink{structpmnk_1_1EPS_ade99e6135f4369bbdeea43ad616d597f}{operator()}} (S const \&s1, S const \&s2) const noexcept
+\begin{DoxyCompactList}\small\item\em Function call operator overload. Implements the indicator functionality. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Additive epsilon indicator. 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{structpmnk_1_1EPS_ade99e6135f4369bbdeea43ad616d597f}\label{structpmnk_1_1EPS_ade99e6135f4369bbdeea43ad616d597f}} 
+\index{pmnk::EPS@{pmnk::EPS}!operator()@{operator()}}
+\index{operator()@{operator()}!pmnk::EPS@{pmnk::EPS}}
+\doxysubsubsection{\texorpdfstring{operator()()}{operator()()}}
+{\footnotesize\ttfamily template$<$typename S  = GASolution$>$ \\
+constexpr double pmnk\+::\+EPS\+::operator() (\begin{DoxyParamCaption}\item[{S const \&}]{s1,  }\item[{S const \&}]{s2 }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [constexpr]}, {\ttfamily [noexcept]}}
+
+
+
+Function call operator overload. Implements the indicator functionality. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em S} & The type used to store an genetic algorithm (\mbox{\hyperlink{classpmnk_1_1IBEA}{IBEA}}) solution \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em s1} & A solution to be evaluated. \\
+\hline
+{\em s2} & A solution to be evaluated. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+double The value for the indicator. 
+\end{DoxyReturn}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/home/pedro/\+Documents/projects/anytime-\/pmnk-\/landscapes/src/\+IBEA/\mbox{\hyperlink{functor_8hpp}{functor.\+hpp}}\end{DoxyCompactItemize}

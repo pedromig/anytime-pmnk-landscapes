@@ -1,0 +1,123 @@
+\hypertarget{classpmnk_1_1GASolution}{}\doxysection{pmnk\+::GASolution Class Reference}
+\label{classpmnk_1_1GASolution}\index{pmnk::GASolution@{pmnk::GASolution}}
+
+
+Genetic algorithm solution wrapper (adds a fitness attribute to the \mbox{\hyperlink{classpmnk_1_1Solution}{Solution}} class)  
+
+
+
+
+{\ttfamily \#include $<$solution.\+hpp$>$}
+
+Inheritance diagram for pmnk\+::GASolution\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classpmnk_1_1GASolution}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classpmnk_1_1GASolution_a73d6f54ce8ea97b2ca45fd2969ba5006}\label{classpmnk_1_1GASolution_a73d6f54ce8ea97b2ca45fd2969ba5006}} 
+{\bfseries GASolution} ()=default
+\begin{DoxyCompactList}\small\item\em Construct a new \mbox{\hyperlink{classpmnk_1_1GASolution}{GASolution}} object. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classpmnk_1_1GASolution_a3ea2079558bd9fe86120a7fb16ddaf6b}{GASolution}} (\mbox{\hyperlink{classpmnk_1_1Solution}{Solution}} \&\&sol, double \mbox{\hyperlink{classpmnk_1_1GASolution_a1c661e4e6f01b2f1c7c059536ff1bd75}{fitness}})
+\begin{DoxyCompactList}\small\item\em Construct a new \mbox{\hyperlink{classpmnk_1_1GASolution}{GASolution}} object (move) \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classpmnk_1_1GASolution_a308672f266a2574c9308a6e45c1e7fcf}{GASolution}} (\mbox{\hyperlink{classpmnk_1_1Solution}{Solution}} \&\&sol)
+\begin{DoxyCompactList}\small\item\em Construct a new \mbox{\hyperlink{classpmnk_1_1GASolution}{GASolution}} object. \end{DoxyCompactList}\item 
+constexpr double const \& \mbox{\hyperlink{classpmnk_1_1GASolution_a1c661e4e6f01b2f1c7c059536ff1bd75}{fitness}} () const
+\begin{DoxyCompactList}\small\item\em Getter method for the \mbox{\hyperlink{classpmnk_1_1GASolution}{GASolution}}\textquotesingle{}s fitness value. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classpmnk_1_1GASolution_a4f32454bd7c88b2d10d4efd701e45f0d}{set\+\_\+objv}} (Objective\+Vector \&\&objv)
+\begin{DoxyCompactList}\small\item\em Set the objv object of the current solution. \end{DoxyCompactList}\item 
+constexpr void \mbox{\hyperlink{classpmnk_1_1GASolution_a77550d64e5fe37c5d9f35ee30bccaa76}{set\+\_\+fitness}} (double const \mbox{\hyperlink{classpmnk_1_1GASolution_a1c661e4e6f01b2f1c7c059536ff1bd75}{fitness}})
+\begin{DoxyCompactList}\small\item\em Setter method for the fitness value. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Detailed Description}
+Genetic algorithm solution wrapper (adds a fitness attribute to the \mbox{\hyperlink{classpmnk_1_1Solution}{Solution}} class) 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classpmnk_1_1GASolution_a3ea2079558bd9fe86120a7fb16ddaf6b}\label{classpmnk_1_1GASolution_a3ea2079558bd9fe86120a7fb16ddaf6b}} 
+\index{pmnk::GASolution@{pmnk::GASolution}!GASolution@{GASolution}}
+\index{GASolution@{GASolution}!pmnk::GASolution@{pmnk::GASolution}}
+\doxysubsubsection{\texorpdfstring{GASolution()}{GASolution()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily pmnk\+::\+GASolution\+::\+GASolution (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classpmnk_1_1Solution}{Solution}} \&\&}]{sol,  }\item[{double}]{fitness }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Construct a new \mbox{\hyperlink{classpmnk_1_1GASolution}{GASolution}} object (move) 
+
+
+\begin{DoxyParams}{Parameters}
+{\em sol} & A rvalue reference to a solution. \\
+\hline
+{\em fitness} & The fitness value of the solution. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classpmnk_1_1GASolution_a308672f266a2574c9308a6e45c1e7fcf}\label{classpmnk_1_1GASolution_a308672f266a2574c9308a6e45c1e7fcf}} 
+\index{pmnk::GASolution@{pmnk::GASolution}!GASolution@{GASolution}}
+\index{GASolution@{GASolution}!pmnk::GASolution@{pmnk::GASolution}}
+\doxysubsubsection{\texorpdfstring{GASolution()}{GASolution()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily pmnk\+::\+GASolution\+::\+GASolution (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classpmnk_1_1Solution}{Solution}} \&\&}]{sol }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Construct a new \mbox{\hyperlink{classpmnk_1_1GASolution}{GASolution}} object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em sol} & A rvalue reference to a solution. (fitness value defaults to 0) \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classpmnk_1_1GASolution_a1c661e4e6f01b2f1c7c059536ff1bd75}\label{classpmnk_1_1GASolution_a1c661e4e6f01b2f1c7c059536ff1bd75}} 
+\index{pmnk::GASolution@{pmnk::GASolution}!fitness@{fitness}}
+\index{fitness@{fitness}!pmnk::GASolution@{pmnk::GASolution}}
+\doxysubsubsection{\texorpdfstring{fitness()}{fitness()}}
+{\footnotesize\ttfamily constexpr double const  \& pmnk\+::\+GASolution\+::fitness (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [constexpr]}}
+
+
+
+Getter method for the \mbox{\hyperlink{classpmnk_1_1GASolution}{GASolution}}\textquotesingle{}s fitness value. 
+
+\begin{DoxyReturn}{Returns}
+constexpr double const\& The fitness value. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classpmnk_1_1GASolution_a77550d64e5fe37c5d9f35ee30bccaa76}\label{classpmnk_1_1GASolution_a77550d64e5fe37c5d9f35ee30bccaa76}} 
+\index{pmnk::GASolution@{pmnk::GASolution}!set\_fitness@{set\_fitness}}
+\index{set\_fitness@{set\_fitness}!pmnk::GASolution@{pmnk::GASolution}}
+\doxysubsubsection{\texorpdfstring{set\_fitness()}{set\_fitness()}}
+{\footnotesize\ttfamily constexpr void pmnk\+::\+GASolution\+::set\+\_\+fitness (\begin{DoxyParamCaption}\item[{double const}]{fitness }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [constexpr]}}
+
+
+
+Setter method for the fitness value. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em fitness} & The fitness value. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classpmnk_1_1GASolution_a4f32454bd7c88b2d10d4efd701e45f0d}\label{classpmnk_1_1GASolution_a4f32454bd7c88b2d10d4efd701e45f0d}} 
+\index{pmnk::GASolution@{pmnk::GASolution}!set\_objv@{set\_objv}}
+\index{set\_objv@{set\_objv}!pmnk::GASolution@{pmnk::GASolution}}
+\doxysubsubsection{\texorpdfstring{set\_objv()}{set\_objv()}}
+{\footnotesize\ttfamily void pmnk\+::\+GASolution\+::set\+\_\+objv (\begin{DoxyParamCaption}\item[{Objective\+Vector \&\&}]{objv }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Set the objv object of the current solution. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em objv} & A rvalue reference to the objective vector. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/home/pedro/\+Documents/projects/anytime-\/pmnk-\/landscapes/src/\+Utils/\mbox{\hyperlink{solution_8hpp}{solution.\+hpp}}\end{DoxyCompactItemize}

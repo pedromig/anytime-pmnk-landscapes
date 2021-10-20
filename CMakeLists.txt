@@ -39,7 +39,7 @@ if (CMAKE_BUILD_TYPE MATCHES "^[Rr]elease")
       set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
 
       configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
-      message("-- Documentation build started")
+      message("-- Setting up documentation build")
 
       add_custom_target(doc_doxygen ALL
           COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}

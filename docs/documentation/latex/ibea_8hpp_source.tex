@@ -1,0 +1,216 @@
+\hypertarget{ibea_8hpp_source}{}\doxysection{ibea.\+hpp}
+\label{ibea_8hpp_source}\index{/home/pedro/Documents/projects/anytime-\/pmnk-\/landscapes/src/IBEA/ibea.hpp@{/home/pedro/Documents/projects/anytime-\/pmnk-\/landscapes/src/IBEA/ibea.hpp}}
+\mbox{\hyperlink{ibea_8hpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 }
+\DoxyCodeLine{12 \textcolor{preprocessor}{\#ifndef IBEA\_HPP}}
+\DoxyCodeLine{13 \textcolor{preprocessor}{\#define IBEA\_HPP}}
+\DoxyCodeLine{14 }
+\DoxyCodeLine{15 \textcolor{preprocessor}{\#include <csignal>}}
+\DoxyCodeLine{16 \textcolor{preprocessor}{\#include <iomanip>}}
+\DoxyCodeLine{17 \textcolor{preprocessor}{\#include <random>}}
+\DoxyCodeLine{18 }
+\DoxyCodeLine{19 \textcolor{preprocessor}{\#include "{}../Utils/solution.hpp"{}}}
+\DoxyCodeLine{20 \textcolor{preprocessor}{\#include "{}../Utils/utils.hpp"{}}}
+\DoxyCodeLine{21 \textcolor{preprocessor}{\#include "{}../Utils/wfg.hpp"{}}}
+\DoxyCodeLine{22 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{functor_8hpp}{functor.hpp}}"{}}}
+\DoxyCodeLine{23 }
+\DoxyCodeLine{24 \textcolor{keyword}{namespace }pmnk \{}
+\DoxyCodeLine{25 }
+\DoxyCodeLine{27 \textcolor{keyword}{class }\mbox{\hyperlink{classpmnk_1_1IBEA}{IBEA}} \{}
+\DoxyCodeLine{28  \textcolor{keyword}{public}:}
+\DoxyCodeLine{29   \mbox{\hyperlink{classpmnk_1_1RMNKEval}{RMNKEval}} eval;}
+\DoxyCodeLine{30 }
+\DoxyCodeLine{31  \textcolor{keyword}{private}:}
+\DoxyCodeLine{32   std::mt19937 m\_generator;}
+\DoxyCodeLine{33   std::ostream \&m\_os;}
+\DoxyCodeLine{34 }
+\DoxyCodeLine{35   \mbox{\hyperlink{classpmnk_1_1hvobj}{hvobj<ObjectiveVector::value\_type>}} m\_hvo;}
+\DoxyCodeLine{36   std::vector<GASolution> m\_solutions;}
+\DoxyCodeLine{37 }
+\DoxyCodeLine{38  \textcolor{keyword}{public}:}
+\DoxyCodeLine{50   \textcolor{keyword}{template} <\textcolor{keyword}{typename} Str = std::\textcolor{keywordtype}{string}, \textcolor{keyword}{typename} Ref = ObjectiveVector>}
+\DoxyCodeLine{51   \mbox{\hyperlink{classpmnk_1_1IBEA_aefb4c224e10cf031890e48ab98eb9056}{IBEA}}(Str \&\&instance, \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} \textcolor{keyword}{const} seed, std::ostream \&os, Ref \&\&ref)}
+\DoxyCodeLine{52       : eval(std::forward<Str>(instance).c\_str())}
+\DoxyCodeLine{53       , m\_generator(seed)}
+\DoxyCodeLine{54       , m\_os(os)}
+\DoxyCodeLine{55       , m\_hvo(std::forward<Ref>(ref)) \{\}}
+\DoxyCodeLine{56 }
+\DoxyCodeLine{66   \textcolor{keyword}{template} <\textcolor{keyword}{typename} Str = std::\textcolor{keywordtype}{string}>}
+\DoxyCodeLine{67   \mbox{\hyperlink{classpmnk_1_1IBEA_a406af855c8a56b10616a5cd7e3528b3f}{IBEA}}(Str \&\&instance, \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} \textcolor{keyword}{const} seed, std::ostream \&os)}
+\DoxyCodeLine{68       : eval(std::forward<Str>(instance).c\_str())}
+\DoxyCodeLine{69       , m\_generator(seed)}
+\DoxyCodeLine{70       , m\_os(os)}
+\DoxyCodeLine{71       , m\_hvo(ObjectiveVector(eval.getM(), 0.0)) \{\}}
+\DoxyCodeLine{72 }
+\DoxyCodeLine{83   \textcolor{keyword}{template} <\textcolor{keyword}{typename} Str = std::\textcolor{keywordtype}{string}, \textcolor{keyword}{typename} Ref = ObjectiveVector>}
+\DoxyCodeLine{84   \mbox{\hyperlink{classpmnk_1_1IBEA_a92d5ea0a66c7fc6db78e9c389318b606}{IBEA}}(Str \&\&instance, \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} \textcolor{keyword}{const} seed, Ref \&\&ref)}
+\DoxyCodeLine{85       : \mbox{\hyperlink{classpmnk_1_1IBEA}{IBEA}}(std::forward<Str>(instance), seed, std::cout, std::forward<Ref>(ref)) \{\}}
+\DoxyCodeLine{86 }
+\DoxyCodeLine{95   \textcolor{keyword}{template} <\textcolor{keyword}{typename} Str = std::\textcolor{keywordtype}{string}>}
+\DoxyCodeLine{96   \mbox{\hyperlink{classpmnk_1_1IBEA_ae0cd61038c1a9cc9f063b6402c7350b5}{IBEA}}(Str \&\&instance, \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} \textcolor{keyword}{const} seed)}
+\DoxyCodeLine{97       : \mbox{\hyperlink{classpmnk_1_1IBEA}{IBEA}}(std::forward<Str>(instance), seed, std::cout) \{\}}
+\DoxyCodeLine{98 }
+\DoxyCodeLine{109   \textcolor{keyword}{template} <\textcolor{keyword}{typename} Str = std::\textcolor{keywordtype}{string}, \textcolor{keyword}{typename} Ref = ObjectiveVector>}
+\DoxyCodeLine{110   \textcolor{keyword}{explicit} \mbox{\hyperlink{classpmnk_1_1IBEA_a1f8d17b5cc78f7edd21bf1488a86e135}{IBEA}}(Str \&\&instance, Ref \&\&ref)}
+\DoxyCodeLine{111       : \mbox{\hyperlink{classpmnk_1_1IBEA}{IBEA}}(std::forward<Str>(instance), std::random\_device()(), std::cout,}
+\DoxyCodeLine{112              std::forward<Ref>(ref)) \{\}}
+\DoxyCodeLine{113 }
+\DoxyCodeLine{121   \textcolor{keyword}{template} <\textcolor{keyword}{typename} Str = std::\textcolor{keywordtype}{string}>}
+\DoxyCodeLine{122   \textcolor{keyword}{explicit} \mbox{\hyperlink{classpmnk_1_1IBEA_a50389a3898a6d61961b486e501465ff7}{IBEA}}(Str \&\&instance)}
+\DoxyCodeLine{123       : \mbox{\hyperlink{classpmnk_1_1IBEA}{IBEA}}(std::forward<Str>(instance), std::random\_device()(), std::cout) \{\}}
+\DoxyCodeLine{124 }
+\DoxyCodeLine{131   std::vector<GASolution> \textcolor{keyword}{const} \&\mbox{\hyperlink{classpmnk_1_1IBEA_a7916f8db61360e667e66aa8281753aa1}{solutions}}()\textcolor{keyword}{ const }\{}
+\DoxyCodeLine{132     \textcolor{keywordflow}{return} m\_solutions;}
+\DoxyCodeLine{133   \}}
+\DoxyCodeLine{134 }
+\DoxyCodeLine{154   \textcolor{keyword}{template} <\textcolor{keyword}{typename} I, \textcolor{keyword}{typename} S, \textcolor{keyword}{typename} M, \textcolor{keyword}{typename} C>}
+\DoxyCodeLine{155   \textcolor{keywordtype}{void} \mbox{\hyperlink{classpmnk_1_1IBEA_a0bf5affd6ade672d0e741f5bf10c2f23}{run}}(std::size\_t \textcolor{keyword}{const} maxeval, std::size\_t \textcolor{keyword}{const} population\_max\_size,}
+\DoxyCodeLine{156            std::size\_t \textcolor{keyword}{const} max\_generations, \textcolor{keywordtype}{double} \textcolor{keyword}{const} scaling\_factor, I \&\&indicator,}
+\DoxyCodeLine{157            C \&\&crossover\_method, M \&\&mutation\_method, S \&\&selection\_method, \textcolor{keywordtype}{bool} adaptive) \{}
+\DoxyCodeLine{158     \textcolor{keywordflow}{if} (adaptive) \{}
+\DoxyCodeLine{159       m\_run<true>(maxeval, population\_max\_size, max\_generations, scaling\_factor, indicator,}
+\DoxyCodeLine{160                   crossover\_method, mutation\_method, selection\_method);}
+\DoxyCodeLine{161     \} \textcolor{keywordflow}{else} \{}
+\DoxyCodeLine{162       m\_run<false>(maxeval, population\_max\_size, max\_generations, scaling\_factor, indicator,}
+\DoxyCodeLine{163                    crossover\_method, mutation\_method, selection\_method);}
+\DoxyCodeLine{164     \}}
+\DoxyCodeLine{165   \}}
+\DoxyCodeLine{166 }
+\DoxyCodeLine{167  \textcolor{keyword}{private}:}
+\DoxyCodeLine{187   \textcolor{keyword}{template} <\textcolor{keywordtype}{bool} Adaptive, \textcolor{keyword}{typename} I, \textcolor{keyword}{typename} S, \textcolor{keyword}{typename} M, \textcolor{keyword}{typename} C>}
+\DoxyCodeLine{188   \textcolor{keywordtype}{void} m\_run(std::size\_t \textcolor{keyword}{const} maxeval, std::size\_t \textcolor{keyword}{const} pop\_max,}
+\DoxyCodeLine{189              std::size\_t \textcolor{keyword}{const} max\_generations, \textcolor{keywordtype}{double} \textcolor{keyword}{const} scaling\_factor, I \&\&indicator,}
+\DoxyCodeLine{190              C \&\&crossover\_method, M \&\&mutation\_method, S \&\&selection\_method) \{}
+\DoxyCodeLine{191     std::size\_t evaluation = 0, gen = 0;}
+\DoxyCodeLine{192     \textcolor{keywordtype}{double} c = 1;}
+\DoxyCodeLine{193 }
+\DoxyCodeLine{194     std::vector<GASolution> population;}
+\DoxyCodeLine{195     population.reserve(pop\_max);}
+\DoxyCodeLine{196 }
+\DoxyCodeLine{197     std::cout << \textcolor{stringliteral}{"{}evaluation,generation,hypervolume\(\backslash\)n"{}};}
+\DoxyCodeLine{198 }
+\DoxyCodeLine{199     \textcolor{keywordflow}{for} (std::size\_t i = 0; i < pop\_max \&\& evaluation < maxeval; ++i) \{}
+\DoxyCodeLine{200       \textcolor{keyword}{auto} sol = \mbox{\hyperlink{classpmnk_1_1GASolution}{GASolution}}(\mbox{\hyperlink{classpmnk_1_1Solution_ac343e4bc7c9db7bceea5f94699699a09}{Solution::random\_solution}}(eval, m\_generator));}
+\DoxyCodeLine{201       \textcolor{keywordflow}{if} (\mbox{\hyperlink{utils_8hpp_aadaca8a2331f4617d6d043b8d75606af}{add\_non\_dominated}}(m\_solutions, sol)) \{}
+\DoxyCodeLine{202         m\_hvo.\mbox{\hyperlink{classpmnk_1_1hvobj_a0770fbe039385ae346c5048fda3c89c2}{insert}}(sol.objective\_vector());}
+\DoxyCodeLine{203         m\_os << std::setprecision(12) << evaluation << \textcolor{stringliteral}{"{},"{}} << gen << \textcolor{stringliteral}{"{},"{}} << m\_hvo.\mbox{\hyperlink{classpmnk_1_1hvobj_a68f3f8436be85ff83cdf7b1d99433726}{value}}() << \textcolor{stringliteral}{"{}\(\backslash\)n"{}};}
+\DoxyCodeLine{204       \}}
+\DoxyCodeLine{205       population.push\_back(std::move(sol));}
+\DoxyCodeLine{206       ++evaluation;}
+\DoxyCodeLine{207     \}}
+\DoxyCodeLine{208 }
+\DoxyCodeLine{209     \textcolor{keywordflow}{if} (evaluation < maxeval) \{}
+\DoxyCodeLine{210       \textcolor{keywordflow}{if} \textcolor{keyword}{constexpr} (Adaptive) \{}
+\DoxyCodeLine{211         c = m\_adaptive\_factor(population, indicator);}
+\DoxyCodeLine{212       \}}
+\DoxyCodeLine{213       m\_fitness\_assignment(population, scaling\_factor * c, indicator);}
+\DoxyCodeLine{214     \}}
+\DoxyCodeLine{215 }
+\DoxyCodeLine{216     \textcolor{keywordflow}{for} (; evaluation < maxeval \&\& gen < max\_generations; ++gen) \{}
+\DoxyCodeLine{217       \textcolor{keyword}{auto} matting\_pool = selection\_method(population);}
+\DoxyCodeLine{218 }
+\DoxyCodeLine{219       \textcolor{keywordflow}{for} (std::size\_t i = 0; i < matting\_pool.size() -\/ 1; i += 2) \{}
+\DoxyCodeLine{220         crossover\_method(matting\_pool[i], matting\_pool[i + 1]);}
+\DoxyCodeLine{221       \}}
+\DoxyCodeLine{222 }
+\DoxyCodeLine{223       \textcolor{keywordflow}{for} (\textcolor{keyword}{auto} \&individual : matting\_pool) \{}
+\DoxyCodeLine{224         mutation\_method(individual);}
+\DoxyCodeLine{225         individual.eval(eval);}
+\DoxyCodeLine{226       \}}
+\DoxyCodeLine{227 }
+\DoxyCodeLine{228       \textcolor{keywordflow}{if} \textcolor{keyword}{constexpr} (Adaptive) \{}
+\DoxyCodeLine{229         c = m\_adaptive\_factor(population, indicator);}
+\DoxyCodeLine{230       \}}
+\DoxyCodeLine{231       m\_fitness\_assignment(population, scaling\_factor * c, indicator);}
+\DoxyCodeLine{232 }
+\DoxyCodeLine{233       \textcolor{keywordflow}{for} (\textcolor{keyword}{auto} \&individual : matting\_pool) \{}
+\DoxyCodeLine{234         \textcolor{keywordflow}{if} (\mbox{\hyperlink{utils_8hpp_aadaca8a2331f4617d6d043b8d75606af}{add\_non\_dominated}}(m\_solutions, individual)) \{}
+\DoxyCodeLine{235           m\_hvo.\mbox{\hyperlink{classpmnk_1_1hvobj_a0770fbe039385ae346c5048fda3c89c2}{insert}}(individual.objective\_vector());}
+\DoxyCodeLine{236           m\_os << std::setprecision(12) << evaluation << \textcolor{stringliteral}{"{},"{}} << gen << \textcolor{stringliteral}{"{},"{}} << m\_hvo.\mbox{\hyperlink{classpmnk_1_1hvobj_a68f3f8436be85ff83cdf7b1d99433726}{value}}() << \textcolor{stringliteral}{"{}\(\backslash\)n"{}};}
+\DoxyCodeLine{237         \}}
+\DoxyCodeLine{238         population.push\_back(std::move(individual));}
+\DoxyCodeLine{239         ++evaluation;}
+\DoxyCodeLine{240       \}}
+\DoxyCodeLine{241       m\_environmental\_selection(population, scaling\_factor * c, pop\_max, indicator);}
+\DoxyCodeLine{242     \}}
+\DoxyCodeLine{243     m\_os << std::setprecision(12) << evaluation << \textcolor{stringliteral}{"{},"{}} << gen << \textcolor{stringliteral}{"{},"{}} << m\_hvo.\mbox{\hyperlink{classpmnk_1_1hvobj_a68f3f8436be85ff83cdf7b1d99433726}{value}}() << \textcolor{stringliteral}{"{}\(\backslash\)n"{}};}
+\DoxyCodeLine{244   \}}
+\DoxyCodeLine{245 }
+\DoxyCodeLine{254   \textcolor{keyword}{template} <\textcolor{keyword}{typename} S = GASolution>}
+\DoxyCodeLine{255   \textcolor{keyword}{auto} m\_objective\_bounds(std::vector<S> \textcolor{keyword}{const} \&population) \{}
+\DoxyCodeLine{256     \textcolor{keyword}{auto} ub = std::numeric\_limits<ObjectiveVector::value\_type>::min();}
+\DoxyCodeLine{257     \textcolor{keyword}{auto} lb = std::numeric\_limits<ObjectiveVector::value\_type>::max();}
+\DoxyCodeLine{258     \textcolor{keywordflow}{for} (\textcolor{keyword}{auto} \textcolor{keyword}{const} \&individual : population) \{}
+\DoxyCodeLine{259       \textcolor{keywordflow}{for} (\textcolor{keyword}{auto} \textcolor{keyword}{const} v : individual.objective\_vector()) \{}
+\DoxyCodeLine{260         lb = std::min(lb, v);}
+\DoxyCodeLine{261         ub = std::max(ub, v);}
+\DoxyCodeLine{262       \}}
+\DoxyCodeLine{263     \}}
+\DoxyCodeLine{264     \textcolor{keywordflow}{return} std::make\_pair(lb, ub);}
+\DoxyCodeLine{265   \}}
+\DoxyCodeLine{266 }
+\DoxyCodeLine{277   \textcolor{keyword}{template} <\textcolor{keyword}{typename} S = GASolution>}
+\DoxyCodeLine{278   \textcolor{keyword}{auto} m\_scale\_objective\_vectors(std::vector<S> \textcolor{keyword}{const} \&population, \textcolor{keywordtype}{double} \textcolor{keyword}{const} lb,}
+\DoxyCodeLine{279                                  \textcolor{keywordtype}{double} \textcolor{keyword}{const} ub) \{}
+\DoxyCodeLine{280     std::vector<S> s = population;}
+\DoxyCodeLine{281     \textcolor{keywordflow}{for} (\textcolor{keyword}{auto} \&individual : s) \{}
+\DoxyCodeLine{282       \textcolor{keyword}{auto} ov = individual.objective\_vector();}
+\DoxyCodeLine{283       \textcolor{keywordflow}{for} (\textcolor{keyword}{auto} \&i : ov) \{}
+\DoxyCodeLine{284         i = (i -\/ ub) / (ub -\/ lb);}
+\DoxyCodeLine{285       \}}
+\DoxyCodeLine{286       individual.set\_objv(std::move(ov));}
+\DoxyCodeLine{287     \}}
+\DoxyCodeLine{288     \textcolor{keywordflow}{return} s;}
+\DoxyCodeLine{289   \}}
+\DoxyCodeLine{290 }
+\DoxyCodeLine{300   \textcolor{keyword}{template} <\textcolor{keyword}{typename} I, \textcolor{keyword}{typename} S = GASolution>}
+\DoxyCodeLine{301   \textcolor{keyword}{auto} m\_adaptive\_factor(std::vector<S> \textcolor{keyword}{const} \&population, I \&\&indicator) \{}
+\DoxyCodeLine{302     \textcolor{keyword}{auto} \&\&[lb, ub] = m\_objective\_bounds(population);}
+\DoxyCodeLine{303     \textcolor{keyword}{auto} s = m\_scale\_objective\_vectors(population, lb, ub);}
+\DoxyCodeLine{304     \textcolor{keyword}{auto} c = std::numeric\_limits<ObjectiveVector::value\_type>::min();}
+\DoxyCodeLine{305     \textcolor{keywordflow}{for} (std::size\_t i = 0; i < s.size(); ++i) \{}
+\DoxyCodeLine{306       \textcolor{keywordflow}{for} (std::size\_t j = 0; j < s.size(); ++j) \{}
+\DoxyCodeLine{307         \textcolor{keywordflow}{if} (i != j) \{}
+\DoxyCodeLine{308           c = std::max(c, std::abs(indicator(s[i], s[j])));}
+\DoxyCodeLine{309         \}}
+\DoxyCodeLine{310       \}}
+\DoxyCodeLine{311     \}}
+\DoxyCodeLine{312     \textcolor{keywordflow}{return} c;}
+\DoxyCodeLine{313   \}}
+\DoxyCodeLine{314 }
+\DoxyCodeLine{324   \textcolor{keyword}{template} <\textcolor{keyword}{typename} I, \textcolor{keyword}{typename} S = GASolution>}
+\DoxyCodeLine{325   \textcolor{keywordtype}{void} m\_fitness\_assignment(std::vector<S> \&population, \textcolor{keywordtype}{double} \textcolor{keyword}{const} k, I \&\&indicator)\textcolor{keyword}{ const }\{}
+\DoxyCodeLine{326     \textcolor{keywordflow}{for} (std::size\_t i = 0; i < population.size(); ++i) \{}
+\DoxyCodeLine{327       population[i].set\_fitness(0);}
+\DoxyCodeLine{328       \textcolor{keywordflow}{for} (std::size\_t j = 0; j < population.size(); ++j) \{}
+\DoxyCodeLine{329         \textcolor{keywordflow}{if} (i != j) \{}
+\DoxyCodeLine{330           population[i].set\_fitness(population[i].fitness() -\/}
+\DoxyCodeLine{331                                     std::exp(-\/indicator(population[j], population[i]) / k));}
+\DoxyCodeLine{332         \}}
+\DoxyCodeLine{333       \}}
+\DoxyCodeLine{334     \}}
+\DoxyCodeLine{335   \}}
+\DoxyCodeLine{336 }
+\DoxyCodeLine{349   \textcolor{keyword}{template} <\textcolor{keyword}{typename} I, \textcolor{keyword}{typename} S = GASolution>}
+\DoxyCodeLine{350   \textcolor{keywordtype}{void} m\_environmental\_selection(std::vector<S> \&population, \textcolor{keywordtype}{double} \textcolor{keyword}{const} k,}
+\DoxyCodeLine{351                                  std::size\_t population\_max\_size, I \&\&indicator) \{}
+\DoxyCodeLine{352     \textcolor{keywordflow}{while} (population.size() > population\_max\_size) \{}
+\DoxyCodeLine{353       std::size\_t worst = 0;}
+\DoxyCodeLine{354       \textcolor{keywordflow}{for} (std::size\_t i = 0; i < population.size(); ++i) \{}
+\DoxyCodeLine{355         worst = population[i].fitness() < population[worst].fitness() ? i : worst;}
+\DoxyCodeLine{356       \}}
+\DoxyCodeLine{357 }
+\DoxyCodeLine{358       std::swap(population[worst], population.back());}
+\DoxyCodeLine{359       \textcolor{keywordflow}{for} (std::size\_t i = 0; i < population.size() -\/ 1; ++i) \{}
+\DoxyCodeLine{360         population[i].set\_fitness(population[i].fitness() +}
+\DoxyCodeLine{361                                   std::exp(-\/indicator(population.back(), population[i]) / k));}
+\DoxyCodeLine{362       \}}
+\DoxyCodeLine{363       population.pop\_back();}
+\DoxyCodeLine{364     \}}
+\DoxyCodeLine{365   \}}
+\DoxyCodeLine{366 \};}
+\DoxyCodeLine{367 \}  \textcolor{comment}{// namespace pmnk}}
+\DoxyCodeLine{368 \textcolor{preprocessor}{\#endif  }\textcolor{comment}{// IBEA\_HPP}}
+
+\end{DoxyCode}

@@ -1,0 +1,161 @@
+\hypertarget{functor_8hpp_source}{}\doxysection{functor.\+hpp}
+\label{functor_8hpp_source}\index{/home/pedro/Documents/projects/anytime-\/pmnk-\/landscapes/src/IBEA/functor.hpp@{/home/pedro/Documents/projects/anytime-\/pmnk-\/landscapes/src/IBEA/functor.hpp}}
+\mbox{\hyperlink{functor_8hpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 }
+\DoxyCodeLine{13 \textcolor{preprocessor}{\#ifndef IBEA\_FUNCTOR\_HPP}}
+\DoxyCodeLine{14 \textcolor{preprocessor}{\#define IBEA\_FUNCTOR\_HPP}}
+\DoxyCodeLine{15 }
+\DoxyCodeLine{16 \textcolor{preprocessor}{\#include <iostream>}}
+\DoxyCodeLine{17 \textcolor{preprocessor}{\#include <random>}}
+\DoxyCodeLine{18 }
+\DoxyCodeLine{19 \textcolor{preprocessor}{\#include "{}../Utils/solution.hpp"{}}}
+\DoxyCodeLine{20 \textcolor{preprocessor}{\#include "{}../Utils/wfg.hpp"{}}}
+\DoxyCodeLine{21 }
+\DoxyCodeLine{22 \textcolor{keyword}{namespace }pmnk \{}
+\DoxyCodeLine{23 }
+\DoxyCodeLine{29 \textcolor{keyword}{template} <\textcolor{keyword}{typename} R = ObjectiveVector>}
+\DoxyCodeLine{30 \textcolor{keyword}{struct }\mbox{\hyperlink{structpmnk_1_1IHD}{IHD}} \{}
+\DoxyCodeLine{31   R m\_ref;}
+\DoxyCodeLine{32 }
+\DoxyCodeLine{38   \textcolor{keyword}{constexpr} \textcolor{keyword}{explicit} \mbox{\hyperlink{structpmnk_1_1IHD_a983161295d414ad7cebdaf63218c638a}{IHD}}(R \&\&ref)}
+\DoxyCodeLine{39       : m\_ref(std::forward<R>(ref)) \{\}}
+\DoxyCodeLine{40 }
+\DoxyCodeLine{50   \textcolor{keyword}{template} <\textcolor{keyword}{typename} S = GASolution>}
+\DoxyCodeLine{51   [[nodiscard]] \textcolor{keywordtype}{double} \mbox{\hyperlink{structpmnk_1_1IHD_abfbe2e02508b61c656e4d8c42d8247e7}{operator()}}(S \textcolor{keyword}{const} \&s1, S \textcolor{keyword}{const} \&s2)\textcolor{keyword}{ const }\{}
+\DoxyCodeLine{52     \textcolor{keyword}{auto} \textcolor{keyword}{const} \&o1 = s1.objective\_vector();}
+\DoxyCodeLine{53     \textcolor{keyword}{auto} \textcolor{keyword}{const} \&o2 = s2.objective\_vector();}
+\DoxyCodeLine{54 }
+\DoxyCodeLine{55     \textcolor{keywordflow}{if} (\mbox{\hyperlink{wfg_8hpp_a7b81975c627cca82a36360252187f14a}{weakly\_dominates}}(o1, o2)) \{}
+\DoxyCodeLine{56       \textcolor{keywordflow}{return} \mbox{\hyperlink{wfg_8hpp_a152f9414469f374f069737088eaf729e}{point\_hv}}(o2, m\_ref) -\/ \mbox{\hyperlink{wfg_8hpp_a152f9414469f374f069737088eaf729e}{point\_hv}}(o1, m\_ref);}
+\DoxyCodeLine{57     \} \textcolor{keywordflow}{else} \{}
+\DoxyCodeLine{58       \mbox{\hyperlink{classpmnk_1_1hvobj}{hvobj<typename R::value\_type>}} hvo(m\_ref);}
+\DoxyCodeLine{59       hvo.\mbox{\hyperlink{classpmnk_1_1hvobj_a0770fbe039385ae346c5048fda3c89c2}{insert}}(o1), hvo.\mbox{\hyperlink{classpmnk_1_1hvobj_a0770fbe039385ae346c5048fda3c89c2}{insert}}(o2);}
+\DoxyCodeLine{60       \textcolor{keywordflow}{return} hvo.\mbox{\hyperlink{classpmnk_1_1hvobj_a68f3f8436be85ff83cdf7b1d99433726}{value}}() -\/ \mbox{\hyperlink{wfg_8hpp_a152f9414469f374f069737088eaf729e}{point\_hv}}(o1, m\_ref);}
+\DoxyCodeLine{61     \}}
+\DoxyCodeLine{62   \}}
+\DoxyCodeLine{63 \};}
+\DoxyCodeLine{64 }
+\DoxyCodeLine{65 }
+\DoxyCodeLine{70 \textcolor{keyword}{struct }\mbox{\hyperlink{structpmnk_1_1EPS}{EPS}} \{}
+\DoxyCodeLine{71 }
+\DoxyCodeLine{76   \textcolor{keyword}{constexpr} \textcolor{keyword}{explicit} \mbox{\hyperlink{structpmnk_1_1EPS_a0f1b9b77c3cedf9100c631982041e356}{EPS}}() = \textcolor{keywordflow}{default};}
+\DoxyCodeLine{77 }
+\DoxyCodeLine{87   \textcolor{keyword}{template} <\textcolor{keyword}{typename} S = GASolution>}
+\DoxyCodeLine{88   [[nodiscard]] \textcolor{keyword}{constexpr} \textcolor{keywordtype}{double} \mbox{\hyperlink{structpmnk_1_1EPS_ade99e6135f4369bbdeea43ad616d597f}{operator()}}(S \textcolor{keyword}{const} \&s1, S \textcolor{keyword}{const} \&s2) \textcolor{keyword}{const} \textcolor{keyword}{noexcept} \{}
+\DoxyCodeLine{89     \textcolor{keywordtype}{double} indicator = std::numeric\_limits<double>::min();}
+\DoxyCodeLine{90     \textcolor{keywordflow}{for} (std::size\_t i = 0; i < s1.objective\_vector().size(); ++i) \{}
+\DoxyCodeLine{91       \textcolor{keywordtype}{double} \textcolor{keyword}{const} o1 = s1.objective\_vector()[i];}
+\DoxyCodeLine{92       \textcolor{keywordtype}{double} \textcolor{keyword}{const} o2 = s2.objective\_vector()[i];}
+\DoxyCodeLine{93       indicator = std::max(indicator, o2 -\/ o1);}
+\DoxyCodeLine{94     \}}
+\DoxyCodeLine{95     \textcolor{keywordflow}{return} indicator;}
+\DoxyCodeLine{96   \}}
+\DoxyCodeLine{97 \};}
+\DoxyCodeLine{98 }
+\DoxyCodeLine{99 }
+\DoxyCodeLine{105 \textcolor{keyword}{template} <\textcolor{keyword}{typename} RNG>}
+\DoxyCodeLine{106 \textcolor{keyword}{struct }\mbox{\hyperlink{structpmnk_1_1NPointCrossover}{NPointCrossover}} \{}
+\DoxyCodeLine{107   std::size\_t m\_crossover\_points;}
+\DoxyCodeLine{108   \textcolor{keywordtype}{double} m\_crossover\_probability;}
+\DoxyCodeLine{109   RNG m\_rng;}
+\DoxyCodeLine{110   std::uniform\_real\_distribution<double> m\_distrib;}
+\DoxyCodeLine{111 }
+\DoxyCodeLine{119   \textcolor{keyword}{constexpr} \mbox{\hyperlink{structpmnk_1_1NPointCrossover_ae4c265a607878a40ce3053521d422a85}{NPointCrossover}}(std::size\_t \textcolor{keyword}{const} crossover\_points, \textcolor{keywordtype}{double} \textcolor{keyword}{const} crossover\_probability,}
+\DoxyCodeLine{120                             RNG \&rng)}
+\DoxyCodeLine{121       : m\_crossover\_points(crossover\_points)}
+\DoxyCodeLine{122       , m\_crossover\_probability(crossover\_probability)}
+\DoxyCodeLine{123       , m\_rng(rng)}
+\DoxyCodeLine{124       , m\_distrib(0.0, 1.0) \{\}}
+\DoxyCodeLine{125 }
+\DoxyCodeLine{133   \textcolor{keyword}{template}<\textcolor{keyword}{typename} S = GASolution>}
+\DoxyCodeLine{134   \textcolor{keywordtype}{void} \mbox{\hyperlink{structpmnk_1_1NPointCrossover_a1285640b135645cffdb10319f853f20f}{operator()}}(S \&s1, S \&s2) \textcolor{keyword}{noexcept} \{}
+\DoxyCodeLine{135     \textcolor{keywordflow}{if} (m\_distrib(m\_rng) < m\_crossover\_probability) \{}
+\DoxyCodeLine{136       std::size\_t p1 = 0, p2 = 0;}
+\DoxyCodeLine{137       \textcolor{keywordflow}{for} (std::size\_t i = 0; i < m\_crossover\_points; ++i, p1 = p2) \{}
+\DoxyCodeLine{138         std::uniform\_int\_distribution<std::size\_t> randint(p1, s1.size() -\/ 1);}
+\DoxyCodeLine{139         p2 = randint(m\_rng);}
+\DoxyCodeLine{140         \textcolor{keywordflow}{for} (\textcolor{keyword}{auto} i = p1; i < p2; ++i) \{}
+\DoxyCodeLine{141           std::swap(s1[i], s2[i]);}
+\DoxyCodeLine{142         \};}
+\DoxyCodeLine{143       \}}
+\DoxyCodeLine{144     \}}
+\DoxyCodeLine{145   \}}
+\DoxyCodeLine{146 \};}
+\DoxyCodeLine{147 }
+\DoxyCodeLine{153 \textcolor{keyword}{template} <\textcolor{keyword}{typename} RNG>}
+\DoxyCodeLine{154 \textcolor{keyword}{struct }\mbox{\hyperlink{structpmnk_1_1UniformCrossover}{UniformCrossover}} \{}
+\DoxyCodeLine{155   \textcolor{keywordtype}{double} m\_crossover\_probability;}
+\DoxyCodeLine{156   RNG m\_rng;}
+\DoxyCodeLine{157   std::bernoulli\_distribution m\_distrib;}
+\DoxyCodeLine{158 }
+\DoxyCodeLine{165   \textcolor{keyword}{constexpr} \mbox{\hyperlink{structpmnk_1_1UniformCrossover_a80251121137ea72de160d6b1d32b91d2}{UniformCrossover}}(\textcolor{keywordtype}{double} crossover\_probability, RNG \&rng)}
+\DoxyCodeLine{166       : m\_crossover\_probability(crossover\_probability)}
+\DoxyCodeLine{167       , m\_rng(rng)}
+\DoxyCodeLine{168       , m\_distrib() \{\}}
+\DoxyCodeLine{169 }
+\DoxyCodeLine{178   \textcolor{keyword}{template} <\textcolor{keyword}{typename} S = GASolution>}
+\DoxyCodeLine{179   \textcolor{keyword}{constexpr} \textcolor{keywordtype}{void} \mbox{\hyperlink{structpmnk_1_1UniformCrossover_a8d02ee5b640897d93e7f607a3c9ea6e9}{operator()}}(S \&s1, S \&s2) \textcolor{keyword}{noexcept} \{}
+\DoxyCodeLine{180     \textcolor{keywordflow}{for} (std::size\_t i = 0; i < s1.size(); ++i) \{}
+\DoxyCodeLine{181       \textcolor{keywordflow}{if} (m\_distrib(m\_rng)) \{}
+\DoxyCodeLine{182         std::swap(s1[i], s2[i]);}
+\DoxyCodeLine{183       \}}
+\DoxyCodeLine{184     \}}
+\DoxyCodeLine{185   \}}
+\DoxyCodeLine{186 \};}
+\DoxyCodeLine{187 }
+\DoxyCodeLine{193 \textcolor{keyword}{template} <\textcolor{keyword}{typename} RNG>}
+\DoxyCodeLine{194 \textcolor{keyword}{struct }\mbox{\hyperlink{structpmnk_1_1UniformMutation}{UniformMutation}} \{}
+\DoxyCodeLine{195   \textcolor{keywordtype}{double} m\_mutation\_probability;}
+\DoxyCodeLine{196   RNG m\_rng;}
+\DoxyCodeLine{197   std::uniform\_real\_distribution<double> m\_distrib;}
+\DoxyCodeLine{198 }
+\DoxyCodeLine{205   \textcolor{keyword}{constexpr} \mbox{\hyperlink{structpmnk_1_1UniformMutation_a4f283db989997bfd65af5a2a0c71e882}{UniformMutation}}(\textcolor{keywordtype}{double} \textcolor{keyword}{const} mutation\_probability, RNG \&rng)}
+\DoxyCodeLine{206       : m\_mutation\_probability(mutation\_probability)}
+\DoxyCodeLine{207       , m\_rng(rng)}
+\DoxyCodeLine{208       , m\_distrib(0.0, 1.0) \{\}}
+\DoxyCodeLine{209 }
+\DoxyCodeLine{217   \textcolor{keyword}{template} <\textcolor{keyword}{typename} S = GASolution>}
+\DoxyCodeLine{218   \textcolor{keyword}{constexpr} \textcolor{keywordtype}{void} \mbox{\hyperlink{structpmnk_1_1UniformMutation_a438fd0a4453656cbdc1da150b761dce5}{operator()}}(S \&s) \textcolor{keyword}{noexcept} \{}
+\DoxyCodeLine{219     \textcolor{keywordflow}{for} (std::size\_t i = 0; i < s.size(); ++i) \{}
+\DoxyCodeLine{220       \textcolor{keywordflow}{if} (m\_distrib(m\_rng) < m\_mutation\_probability) \{}
+\DoxyCodeLine{221         s[i] = !s[i];}
+\DoxyCodeLine{222       \}}
+\DoxyCodeLine{223     \}}
+\DoxyCodeLine{224   \}}
+\DoxyCodeLine{225 \};}
+\DoxyCodeLine{226 }
+\DoxyCodeLine{232 \textcolor{keyword}{template} <\textcolor{keyword}{typename} RNG>}
+\DoxyCodeLine{233 \textcolor{keyword}{struct }\mbox{\hyperlink{structpmnk_1_1KWayTournamentSelection}{KWayTournamentSelection}} \{}
+\DoxyCodeLine{234   std::size\_t m\_tournament\_size;}
+\DoxyCodeLine{235   std::size\_t m\_matting\_pool\_size;}
+\DoxyCodeLine{236   RNG m\_rng;}
+\DoxyCodeLine{237 }
+\DoxyCodeLine{245   \textcolor{keyword}{constexpr} \mbox{\hyperlink{structpmnk_1_1KWayTournamentSelection_abd25f7bcab4080b244f158da95620fd7}{KWayTournamentSelection}}(std::size\_t \textcolor{keyword}{const} tournament\_size,}
+\DoxyCodeLine{246                                     std::size\_t \textcolor{keyword}{const} matting\_pool\_size, RNG \&rng)}
+\DoxyCodeLine{247       : m\_tournament\_size(tournament\_size)}
+\DoxyCodeLine{248       , m\_matting\_pool\_size(matting\_pool\_size)}
+\DoxyCodeLine{249       , m\_rng(rng)\{\};}
+\DoxyCodeLine{250 }
+\DoxyCodeLine{260   \textcolor{keyword}{template} <\textcolor{keyword}{typename} S = GASolution>}
+\DoxyCodeLine{261   [[nodiscard]] std::vector<S> \mbox{\hyperlink{structpmnk_1_1KWayTournamentSelection_ab0a2c8a7c10962bb3cb8291e5bfe8360}{operator()}}(std::vector<S> \textcolor{keyword}{const} \&population) \textcolor{keyword}{noexcept} \{}
+\DoxyCodeLine{262     std::vector<S> matting\_pool;}
+\DoxyCodeLine{263     matting\_pool.reserve(m\_matting\_pool\_size);}
+\DoxyCodeLine{264     std::uniform\_int\_distribution<std::size\_t> distrib(0, population.size() -\/ 1);}
+\DoxyCodeLine{265 }
+\DoxyCodeLine{266     \textcolor{keywordflow}{for} (std::size\_t i = 0; i < m\_matting\_pool\_size; ++i) \{}
+\DoxyCodeLine{267       \textcolor{keyword}{auto} best = distrib(m\_rng);}
+\DoxyCodeLine{268       \textcolor{keywordflow}{for} (std::size\_t j = 0; j < m\_tournament\_size -\/ 1; ++j) \{}
+\DoxyCodeLine{269         \textcolor{keyword}{auto} other = distrib(m\_rng);}
+\DoxyCodeLine{270         best = population[other].fitness() > population[best].fitness() ? other : best;}
+\DoxyCodeLine{271       \}}
+\DoxyCodeLine{272       matting\_pool.push\_back(population[best]);}
+\DoxyCodeLine{273     \}}
+\DoxyCodeLine{274     \textcolor{keywordflow}{return} matting\_pool;}
+\DoxyCodeLine{275   \}}
+\DoxyCodeLine{276 \};}
+\DoxyCodeLine{277 }
+\DoxyCodeLine{278 \}  \textcolor{comment}{// namespace pmnk}}
+\DoxyCodeLine{279 \textcolor{preprocessor}{\#endif  }\textcolor{comment}{// IBEA\_FUNCTOR\_HPP}}
+
+\end{DoxyCode}

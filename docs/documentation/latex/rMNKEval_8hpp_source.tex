@@ -1,0 +1,323 @@
+\hypertarget{rMNKEval_8hpp_source}{}\doxysection{r\+MNKEval.\+hpp}
+\label{rMNKEval_8hpp_source}\index{/home/pedro/Documents/projects/anytime-\/pmnk-\/landscapes/src/Utils/rMNKEval.hpp@{/home/pedro/Documents/projects/anytime-\/pmnk-\/landscapes/src/Utils/rMNKEval.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 \textcolor{comment}{/*}}
+\DoxyCodeLine{2 \textcolor{comment}{    This library is free software; you can redistribute it and/or}}
+\DoxyCodeLine{3 \textcolor{comment}{    modify it under the terms of the GNU Lesser General Public}}
+\DoxyCodeLine{4 \textcolor{comment}{    License as published by the Free Software Foundation; version 3}}
+\DoxyCodeLine{5 \textcolor{comment}{    of the License.}}
+\DoxyCodeLine{6 \textcolor{comment}{}}
+\DoxyCodeLine{7 \textcolor{comment}{    This library is distributed in the hope that it will be useful,}}
+\DoxyCodeLine{8 \textcolor{comment}{    but WITHOUT ANY WARRANTY; without even the implied warranty of}}
+\DoxyCodeLine{9 \textcolor{comment}{    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU}}
+\DoxyCodeLine{10 \textcolor{comment}{    Lesser General Public License for more details.}}
+\DoxyCodeLine{11 \textcolor{comment}{}}
+\DoxyCodeLine{12 \textcolor{comment}{    You should have received a copy of the GNU Lesser General Public}}
+\DoxyCodeLine{13 \textcolor{comment}{    License along with this library; if not, write to the Free Software}}
+\DoxyCodeLine{14 \textcolor{comment}{    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-\/1307  USA}}
+\DoxyCodeLine{15 \textcolor{comment}{}}
+\DoxyCodeLine{16 \textcolor{comment}{Contact: http://mocobench.sourceforge.net}}
+\DoxyCodeLine{17 \textcolor{comment}{}}
+\DoxyCodeLine{18 \textcolor{comment}{Authors:}}
+\DoxyCodeLine{19 \textcolor{comment}{    Arnaud Liefooghe <arnaud.liefooghe@lifl.fr>}}
+\DoxyCodeLine{20 \textcolor{comment}{    Sebastien Verel  <sebastien.verel@inria.fr>}}
+\DoxyCodeLine{21 \textcolor{comment}{*/}}
+\DoxyCodeLine{22 }
+\DoxyCodeLine{23 \textcolor{preprocessor}{\#ifndef \_\_rMNKEval}}
+\DoxyCodeLine{24 \textcolor{preprocessor}{\#define \_\_rMNKEval}}
+\DoxyCodeLine{25 }
+\DoxyCodeLine{26 \textcolor{comment}{/*}}
+\DoxyCodeLine{27 \textcolor{comment}{ *  Fitness function of the rMNK-\/landscapes}}
+\DoxyCodeLine{28 \textcolor{comment}{ *  reading a rhoMNK-\/landscapes instance file}}
+\DoxyCodeLine{29 \textcolor{comment}{ *  in c++ style}}
+\DoxyCodeLine{30 \textcolor{comment}{ *}}
+\DoxyCodeLine{31 \textcolor{comment}{ *  rhoMNK-\/landscapes instances can be generated with the rmnkGenerator.R}}
+\DoxyCodeLine{32 \textcolor{comment}{ *}}
+\DoxyCodeLine{33 \textcolor{comment}{ *  More information on rhoMNK-\/landscapes, see original paper:}}
+\DoxyCodeLine{34 \textcolor{comment}{ *  Verel S., Liefooghe A., Jourdan L., Dhaenens C. "{}Analyzing the Effect of Objective Correlation}}
+\DoxyCodeLine{35 \textcolor{comment}{ * on the Efficient Set of MNK-\/Landscapes"{}, In Proceedings of Learning and Intelligent OptimizatioN}}
+\DoxyCodeLine{36 \textcolor{comment}{ * Conference (LION 5), LNCS, p. , 2011.}}
+\DoxyCodeLine{37 \textcolor{comment}{ */}}
+\DoxyCodeLine{38 }
+\DoxyCodeLine{39 \textcolor{preprocessor}{\#include <fstream>}}
+\DoxyCodeLine{40 \textcolor{preprocessor}{\#include <iostream>}}
+\DoxyCodeLine{41 \textcolor{preprocessor}{\#include <string>}}
+\DoxyCodeLine{42 \textcolor{preprocessor}{\#include <vector>}}
+\DoxyCodeLine{43 }
+\DoxyCodeLine{44 \textcolor{keyword}{namespace }pmnk \{}
+\DoxyCodeLine{45 }
+\DoxyCodeLine{47 \textcolor{keyword}{class }\mbox{\hyperlink{classpmnk_1_1RMNKEval}{RMNKEval}} \{}
+\DoxyCodeLine{48  \textcolor{keyword}{public}:}
+\DoxyCodeLine{49   \textcolor{comment}{/*}}
+\DoxyCodeLine{50 \textcolor{comment}{   *  Constructor}}
+\DoxyCodeLine{51 \textcolor{comment}{   *}}
+\DoxyCodeLine{52 \textcolor{comment}{   * @param \_fileName file name instance of the rho MNK-\/landscapes}}
+\DoxyCodeLine{53 \textcolor{comment}{   */}}
+\DoxyCodeLine{54   \mbox{\hyperlink{classpmnk_1_1RMNKEval}{RMNKEval}}(\textcolor{keyword}{const} \textcolor{keywordtype}{char} *\_fileName) \{}
+\DoxyCodeLine{55     load(\_fileName);}
+\DoxyCodeLine{56   \}}
+\DoxyCodeLine{57 }
+\DoxyCodeLine{58   \textcolor{comment}{/*}}
+\DoxyCodeLine{59 \textcolor{comment}{   *  Destructor}}
+\DoxyCodeLine{60 \textcolor{comment}{   */}}
+\DoxyCodeLine{61   \mbox{\hyperlink{classpmnk_1_1RMNKEval}{\string~RMNKEval}}() \{}
+\DoxyCodeLine{62     \textcolor{keywordflow}{if} (links != NULL) \{}
+\DoxyCodeLine{63       \textcolor{keywordflow}{for} (\textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} n = 0; n < M; n++) \{}
+\DoxyCodeLine{64         \textcolor{keywordflow}{for} (\textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} i = 0; i < N; i++)}
+\DoxyCodeLine{65           \textcolor{keyword}{delete}[](links[n][i]);}
+\DoxyCodeLine{66         \textcolor{keyword}{delete}[] links[n];}
+\DoxyCodeLine{67       \}}
+\DoxyCodeLine{68 }
+\DoxyCodeLine{69       \textcolor{keyword}{delete}[] links;}
+\DoxyCodeLine{70       links = NULL;}
+\DoxyCodeLine{71     \}}
+\DoxyCodeLine{72 }
+\DoxyCodeLine{73     \textcolor{keywordflow}{if} (tables != NULL) \{}
+\DoxyCodeLine{74       \textcolor{keywordflow}{for} (\textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} n = 0; n < M; n++) \{}
+\DoxyCodeLine{75         \textcolor{keywordflow}{for} (\textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} i = 0; i < N; i++)}
+\DoxyCodeLine{76           \textcolor{keyword}{delete}[](tables[n][i]);}
+\DoxyCodeLine{77         \textcolor{keyword}{delete}[] tables[n];}
+\DoxyCodeLine{78       \}}
+\DoxyCodeLine{79 }
+\DoxyCodeLine{80       \textcolor{keyword}{delete} tables;}
+\DoxyCodeLine{81       tables = NULL;}
+\DoxyCodeLine{82     \}}
+\DoxyCodeLine{83   \}}
+\DoxyCodeLine{84 }
+\DoxyCodeLine{85   \textcolor{comment}{/*}}
+\DoxyCodeLine{86 \textcolor{comment}{   * Compute the fitness function}}
+\DoxyCodeLine{87 \textcolor{comment}{   *}}
+\DoxyCodeLine{88 \textcolor{comment}{   * @param \_solution the solution to evaluate}}
+\DoxyCodeLine{89 \textcolor{comment}{   * @param \_objVec   the objective vector of the corresponding solution}}
+\DoxyCodeLine{90 \textcolor{comment}{   */}}
+\DoxyCodeLine{91   \textcolor{keywordtype}{void} eval(std::vector<bool> \&\_solution, std::vector<double> \&\_objVec) \{}
+\DoxyCodeLine{92     \_objVec.resize(M);}
+\DoxyCodeLine{93 }
+\DoxyCodeLine{94     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{unsigned} n = 0; n < M; n++)}
+\DoxyCodeLine{95       \_objVec[n] = evalNK(n, \_solution);}
+\DoxyCodeLine{96   \}}
+\DoxyCodeLine{97 }
+\DoxyCodeLine{98   \textcolor{comment}{/*}}
+\DoxyCodeLine{99 \textcolor{comment}{   * to get objective space dimension}}
+\DoxyCodeLine{100 \textcolor{comment}{   *}}
+\DoxyCodeLine{101 \textcolor{comment}{   * @return dimension of the objective space}}
+\DoxyCodeLine{102 \textcolor{comment}{   */}}
+\DoxyCodeLine{103   \textcolor{keywordtype}{unsigned} getM() \{}
+\DoxyCodeLine{104     \textcolor{keywordflow}{return} M;}
+\DoxyCodeLine{105   \}}
+\DoxyCodeLine{106 }
+\DoxyCodeLine{107   \textcolor{comment}{/*}}
+\DoxyCodeLine{108 \textcolor{comment}{   * to get bitstring size}}
+\DoxyCodeLine{109 \textcolor{comment}{   *}}
+\DoxyCodeLine{110 \textcolor{comment}{   * @return dimension of the bitstring}}
+\DoxyCodeLine{111 \textcolor{comment}{   */}}
+\DoxyCodeLine{112   \textcolor{keywordtype}{unsigned} getN() \{}
+\DoxyCodeLine{113     \textcolor{keywordflow}{return} N;}
+\DoxyCodeLine{114   \}}
+\DoxyCodeLine{115 }
+\DoxyCodeLine{116   \textcolor{comment}{/*}}
+\DoxyCodeLine{117 \textcolor{comment}{   * to get epistasis degree (K)}}
+\DoxyCodeLine{118 \textcolor{comment}{   *}}
+\DoxyCodeLine{119 \textcolor{comment}{   * @return epistasis degree K}}
+\DoxyCodeLine{120 \textcolor{comment}{   */}}
+\DoxyCodeLine{121   \textcolor{keywordtype}{unsigned} getK() \{}
+\DoxyCodeLine{122     \textcolor{keywordflow}{return} K;}
+\DoxyCodeLine{123   \}}
+\DoxyCodeLine{124 }
+\DoxyCodeLine{125   \textcolor{comment}{/*}}
+\DoxyCodeLine{126 \textcolor{comment}{   * to get the correlation between each tuple of contributions}}
+\DoxyCodeLine{127 \textcolor{comment}{   *}}
+\DoxyCodeLine{128 \textcolor{comment}{   * @return parameter rho}}
+\DoxyCodeLine{129 \textcolor{comment}{   */}}
+\DoxyCodeLine{130   \textcolor{keywordtype}{double} getRho() \{}
+\DoxyCodeLine{131     \textcolor{keywordflow}{return} rho;}
+\DoxyCodeLine{132   \}}
+\DoxyCodeLine{133 }
+\DoxyCodeLine{134  \textcolor{keyword}{protected}:}
+\DoxyCodeLine{135   \textcolor{comment}{// correlation between contributions}}
+\DoxyCodeLine{136   \textcolor{keywordtype}{double} rho;}
+\DoxyCodeLine{137 }
+\DoxyCodeLine{138   \textcolor{comment}{// number of objective functions}}
+\DoxyCodeLine{139   \textcolor{keywordtype}{unsigned} M;}
+\DoxyCodeLine{140 }
+\DoxyCodeLine{141   \textcolor{comment}{// size of the bit string}}
+\DoxyCodeLine{142   \textcolor{keywordtype}{unsigned} N;}
+\DoxyCodeLine{143 }
+\DoxyCodeLine{144   \textcolor{comment}{// number of interactions between variables (epistasis)}}
+\DoxyCodeLine{145   \textcolor{keywordtype}{unsigned} K;}
+\DoxyCodeLine{146 }
+\DoxyCodeLine{147   \textcolor{comment}{// the M tables of contributions}}
+\DoxyCodeLine{148   \textcolor{keywordtype}{double} ***tables;}
+\DoxyCodeLine{149 }
+\DoxyCodeLine{150   \textcolor{comment}{// the M links description}}
+\DoxyCodeLine{151   \textcolor{keywordtype}{unsigned} ***links;}
+\DoxyCodeLine{152 }
+\DoxyCodeLine{153 \textcolor{comment}{  /***********************************************}}
+\DoxyCodeLine{154 \textcolor{comment}{   *}}
+\DoxyCodeLine{155 \textcolor{comment}{   * Load the file of a rMNK-\/landscapes instance}}
+\DoxyCodeLine{156 \textcolor{comment}{   *}}
+\DoxyCodeLine{157 \textcolor{comment}{   * @param fileName file name instance of the rMNK-\/landscapes}}
+\DoxyCodeLine{158 \textcolor{comment}{   *}}
+\DoxyCodeLine{159 \textcolor{comment}{   ***********************************************/}}
+\DoxyCodeLine{160   \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} load(\textcolor{keyword}{const} \textcolor{keywordtype}{char} *\_fileName) \{}
+\DoxyCodeLine{161     std::fstream file;}
+\DoxyCodeLine{162     file.open(\_fileName, std::ios::in);}
+\DoxyCodeLine{163 }
+\DoxyCodeLine{164     \textcolor{keywordflow}{if} (file.is\_open()) \{}
+\DoxyCodeLine{165       std::string s;}
+\DoxyCodeLine{166 }
+\DoxyCodeLine{167       \textcolor{comment}{// read the commentaries}}
+\DoxyCodeLine{168       std::string line;}
+\DoxyCodeLine{169 }
+\DoxyCodeLine{170       file >> s;}
+\DoxyCodeLine{171       \textcolor{keywordflow}{while} (s[0] == \textcolor{charliteral}{'c'}) \{}
+\DoxyCodeLine{172         getline(file, line, \textcolor{charliteral}{'\(\backslash\)n'});}
+\DoxyCodeLine{173         file >> s;}
+\DoxyCodeLine{174       \}}
+\DoxyCodeLine{175 }
+\DoxyCodeLine{176       \textcolor{comment}{// read the parameters}}
+\DoxyCodeLine{177       \textcolor{keywordflow}{if} (s.compare(\textcolor{stringliteral}{"{}p"{}}) != 0)}
+\DoxyCodeLine{178         std::cerr << \textcolor{stringliteral}{"{}Error RMNKEval.load: expected line beging by \(\backslash\)"{}p\(\backslash\)"{} at "{}} + s + \textcolor{stringliteral}{"{} in "{}}}
+\DoxyCodeLine{179                   << \_fileName;}
+\DoxyCodeLine{180 }
+\DoxyCodeLine{181       file >> s;}
+\DoxyCodeLine{182 }
+\DoxyCodeLine{183       \textcolor{keywordflow}{if} (s.compare(\textcolor{stringliteral}{"{}rMNK"{}}) != 0)}
+\DoxyCodeLine{184         std::cerr << \textcolor{stringliteral}{"{}Error RMNKEval.load: type rMNK expected at "{}} + s + \textcolor{stringliteral}{"{} in "{}} << \_fileName;}
+\DoxyCodeLine{185 }
+\DoxyCodeLine{186       \textcolor{comment}{// effective read of the parameters}}
+\DoxyCodeLine{187       file >> rho >> M >> N >> K;}
+\DoxyCodeLine{188 }
+\DoxyCodeLine{189       init();}
+\DoxyCodeLine{190 }
+\DoxyCodeLine{191       file >> s;}
+\DoxyCodeLine{192       \textcolor{comment}{// read the links}}
+\DoxyCodeLine{193       \textcolor{keywordflow}{if} (s.compare(\textcolor{stringliteral}{"{}p"{}}) != 0)}
+\DoxyCodeLine{194         std::cerr << \textcolor{stringliteral}{"{}Error RMNKEval.load: expected line beging by \(\backslash\)"{}p\(\backslash\)"{} at "{}} + s + \textcolor{stringliteral}{"{} in "{}}}
+\DoxyCodeLine{195                   << \_fileName;}
+\DoxyCodeLine{196 }
+\DoxyCodeLine{197       file >> s;}
+\DoxyCodeLine{198       \textcolor{keywordflow}{if} (s.compare(\textcolor{stringliteral}{"{}links"{}}) == 0)}
+\DoxyCodeLine{199         loadLinks(file);}
+\DoxyCodeLine{200       \textcolor{keywordflow}{else}}
+\DoxyCodeLine{201         std::cerr << \textcolor{stringliteral}{"{}Error RMNKEval.load: line with \(\backslash\)"{}links\(\backslash\)"{} expected at "{}} + s + \textcolor{stringliteral}{"{} in "{}}}
+\DoxyCodeLine{202                   << \_fileName;}
+\DoxyCodeLine{203 }
+\DoxyCodeLine{204       \textcolor{comment}{// read the tables of contributions}}
+\DoxyCodeLine{205       file >> s;}
+\DoxyCodeLine{206       \textcolor{keywordflow}{if} (s.compare(\textcolor{stringliteral}{"{}p"{}}) != 0)}
+\DoxyCodeLine{207         std::cerr << \textcolor{stringliteral}{"{}Error RMNKEval.load: expected line beging by \(\backslash\)"{}p\(\backslash\)"{} at "{}} + s + \textcolor{stringliteral}{"{} in "{}}}
+\DoxyCodeLine{208                   << \_fileName;}
+\DoxyCodeLine{209 }
+\DoxyCodeLine{210       file >> s;}
+\DoxyCodeLine{211 }
+\DoxyCodeLine{212       \textcolor{keywordflow}{if} (s.compare(\textcolor{stringliteral}{"{}tables"{}}) == 0)}
+\DoxyCodeLine{213         loadTables(file);}
+\DoxyCodeLine{214       \textcolor{keywordflow}{else}}
+\DoxyCodeLine{215         std::cerr << \textcolor{stringliteral}{"{}Error RMNKEval.load: line with \(\backslash\)"{}tables\(\backslash\)"{} expected at "{}} + s + \textcolor{stringliteral}{"{} in "{}}}
+\DoxyCodeLine{216                   << \_fileName;}
+\DoxyCodeLine{217 }
+\DoxyCodeLine{218       file.close();}
+\DoxyCodeLine{219     \} \textcolor{keywordflow}{else}}
+\DoxyCodeLine{220       std::cerr << \textcolor{stringliteral}{"{}Error RMNKEval.load: impossible to open file "{}} << \_fileName;}
+\DoxyCodeLine{221   \};}
+\DoxyCodeLine{222 }
+\DoxyCodeLine{223 \textcolor{comment}{  /***********************************************}}
+\DoxyCodeLine{224 \textcolor{comment}{   *}}
+\DoxyCodeLine{225 \textcolor{comment}{   * Initialization of the different tables and epistasis links}}
+\DoxyCodeLine{226 \textcolor{comment}{   *}}
+\DoxyCodeLine{227 \textcolor{comment}{   ***********************************************/}}
+\DoxyCodeLine{228   \textcolor{keywordtype}{void} init() \{}
+\DoxyCodeLine{229     links = \textcolor{keyword}{new} \textcolor{keywordtype}{unsigned} **[M];}
+\DoxyCodeLine{230     tables = \textcolor{keyword}{new} \textcolor{keywordtype}{double} **[M];}
+\DoxyCodeLine{231 }
+\DoxyCodeLine{232     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{unsigned} n = 0; n < M; n++) \{}
+\DoxyCodeLine{233       links[n] = \textcolor{keyword}{new} \textcolor{keywordtype}{unsigned} *[N];}
+\DoxyCodeLine{234       tables[n] = \textcolor{keyword}{new} \textcolor{keywordtype}{double} *[N];}
+\DoxyCodeLine{235 }
+\DoxyCodeLine{236       \textcolor{keywordflow}{for} (\textcolor{keywordtype}{unsigned} i = 0; i < N; i++) \{}
+\DoxyCodeLine{237         tables[n][i] = \textcolor{keyword}{new} \textcolor{keywordtype}{double}[1 << (K + 1)];}
+\DoxyCodeLine{238         links[n][i] = \textcolor{keyword}{new} \textcolor{keywordtype}{unsigned}[K + 1];}
+\DoxyCodeLine{239       \}}
+\DoxyCodeLine{240     \}}
+\DoxyCodeLine{241   \}}
+\DoxyCodeLine{242 }
+\DoxyCodeLine{243 \textcolor{comment}{  /***********************************************}}
+\DoxyCodeLine{244 \textcolor{comment}{   *}}
+\DoxyCodeLine{245 \textcolor{comment}{   * Load the epistasis links from file}}
+\DoxyCodeLine{246 \textcolor{comment}{   *}}
+\DoxyCodeLine{247 \textcolor{comment}{   * @param \_file open file of the instance}}
+\DoxyCodeLine{248 \textcolor{comment}{   *}}
+\DoxyCodeLine{249 \textcolor{comment}{   ***********************************************/}}
+\DoxyCodeLine{250   \textcolor{keywordtype}{void} loadLinks(std::fstream \&\_file) \{}
+\DoxyCodeLine{251     \textcolor{keywordtype}{unsigned} n, i, j;}
+\DoxyCodeLine{252 }
+\DoxyCodeLine{253     \textcolor{keywordflow}{for} (i = 0; i < N; i++)}
+\DoxyCodeLine{254       \textcolor{keywordflow}{for} (j = 0; j < K + 1; j++)}
+\DoxyCodeLine{255         \textcolor{keywordflow}{for} (n = 0; n < M; n++)}
+\DoxyCodeLine{256           \_file >> links[n][i][j];}
+\DoxyCodeLine{257   \}}
+\DoxyCodeLine{258 }
+\DoxyCodeLine{259 \textcolor{comment}{  /***********************************************}}
+\DoxyCodeLine{260 \textcolor{comment}{   *}}
+\DoxyCodeLine{261 \textcolor{comment}{   * Load the tables of contribution}}
+\DoxyCodeLine{262 \textcolor{comment}{   *}}
+\DoxyCodeLine{263 \textcolor{comment}{   * @param \_file open file of the instance}}
+\DoxyCodeLine{264 \textcolor{comment}{   *}}
+\DoxyCodeLine{265 \textcolor{comment}{   ***********************************************/}}
+\DoxyCodeLine{266   \textcolor{keywordtype}{void} loadTables(std::fstream \&\_file) \{}
+\DoxyCodeLine{267     \textcolor{keywordtype}{unsigned} n, i;}
+\DoxyCodeLine{268     \textcolor{keywordtype}{int} j;}
+\DoxyCodeLine{269 }
+\DoxyCodeLine{270     \textcolor{keywordflow}{for} (i = 0; i < N; i++)}
+\DoxyCodeLine{271       \textcolor{keywordflow}{for} (j = 0; j < (1 << (K + 1)); j++)}
+\DoxyCodeLine{272         \textcolor{keywordflow}{for} (n = 0; n < M; n++)}
+\DoxyCodeLine{273           \_file >> tables[n][i][j];}
+\DoxyCodeLine{274   \}}
+\DoxyCodeLine{275 }
+\DoxyCodeLine{276 \textcolor{comment}{  /***********************************************}}
+\DoxyCodeLine{277 \textcolor{comment}{   *}}
+\DoxyCodeLine{278 \textcolor{comment}{   * Fitness function of a single-\/objective NK-\/landscapes}}
+\DoxyCodeLine{279 \textcolor{comment}{   *}}
+\DoxyCodeLine{280 \textcolor{comment}{   * @param \_numObj the objective fuction to consider}}
+\DoxyCodeLine{281 \textcolor{comment}{   * @param \_sol the solution to evaluate}}
+\DoxyCodeLine{282 \textcolor{comment}{   *}}
+\DoxyCodeLine{283 \textcolor{comment}{   ***********************************************/}}
+\DoxyCodeLine{284   \textcolor{keywordtype}{double} evalNK(\textcolor{keywordtype}{unsigned} \_numObj, std::vector<bool> \&\_sol) \{}
+\DoxyCodeLine{285     \textcolor{keywordtype}{double} accu = 0.0;}
+\DoxyCodeLine{286 }
+\DoxyCodeLine{287     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} i = 0; i < N; i++)}
+\DoxyCodeLine{288       accu += tables[\_numObj][i][sigma(\_numObj, \_sol, (\textcolor{keywordtype}{int})i)];}
+\DoxyCodeLine{289 }
+\DoxyCodeLine{290     \textcolor{keywordflow}{return} accu / (double)N;}
+\DoxyCodeLine{291   \}}
+\DoxyCodeLine{292 }
+\DoxyCodeLine{293 \textcolor{comment}{  /***********************************************}}
+\DoxyCodeLine{294 \textcolor{comment}{   *}}
+\DoxyCodeLine{295 \textcolor{comment}{   * Extract epistatic links of the fitness contribution i}}
+\DoxyCodeLine{296 \textcolor{comment}{   *}}
+\DoxyCodeLine{297 \textcolor{comment}{   * @param \_numObj the objective function to consider}}
+\DoxyCodeLine{298 \textcolor{comment}{   * @param \_sol the solution to evaluate}}
+\DoxyCodeLine{299 \textcolor{comment}{   * @param \_i bit of the contribution}}
+\DoxyCodeLine{300 \textcolor{comment}{   *}}
+\DoxyCodeLine{301 \textcolor{comment}{   * **********************************************/}}
+\DoxyCodeLine{302   \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} sigma(\textcolor{keywordtype}{unsigned} \_numObj, std::vector<bool> \&\_sol, \textcolor{keywordtype}{int} \_i) \{}
+\DoxyCodeLine{303     \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} n = 1;}
+\DoxyCodeLine{304     \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} accu = 0;}
+\DoxyCodeLine{305 }
+\DoxyCodeLine{306     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} j = 0; j < K + 1; j++) \{}
+\DoxyCodeLine{307       \textcolor{keywordflow}{if} (\_sol[links[\_numObj][\_i][j]] == 1)}
+\DoxyCodeLine{308         accu = accu | n;}
+\DoxyCodeLine{309 }
+\DoxyCodeLine{310       n = n << 1;}
+\DoxyCodeLine{311     \}}
+\DoxyCodeLine{312 }
+\DoxyCodeLine{313     \textcolor{keywordflow}{return} accu;}
+\DoxyCodeLine{314   \}}
+\DoxyCodeLine{315 \};}
+\DoxyCodeLine{316 }
+\DoxyCodeLine{317 \}  \textcolor{comment}{// namespace pmnk}}
+\DoxyCodeLine{318 \textcolor{preprocessor}{\#endif  }\textcolor{comment}{// \_\_rMNKEval}}
+
+\end{DoxyCode}

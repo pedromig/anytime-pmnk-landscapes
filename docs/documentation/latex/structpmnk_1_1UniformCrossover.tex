@@ -1,0 +1,95 @@
+\hypertarget{structpmnk_1_1UniformCrossover}{}\doxysection{pmnk\+::Uniform\+Crossover\texorpdfstring{$<$}{<} RNG \texorpdfstring{$>$}{>} Struct Template Reference}
+\label{structpmnk_1_1UniformCrossover}\index{pmnk::UniformCrossover$<$ RNG $>$@{pmnk::UniformCrossover$<$ RNG $>$}}
+
+
+Uniform Crossover operator.  
+
+
+
+
+{\ttfamily \#include $<$functor.\+hpp$>$}
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+constexpr \mbox{\hyperlink{structpmnk_1_1UniformCrossover_a80251121137ea72de160d6b1d32b91d2}{Uniform\+Crossover}} (double crossover\+\_\+probability, RNG \&rng)
+\begin{DoxyCompactList}\small\item\em Construct a new \mbox{\hyperlink{structpmnk_1_1UniformCrossover}{Uniform\+Crossover}} object. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename S  = GASolution$>$ }\\constexpr void \mbox{\hyperlink{structpmnk_1_1UniformCrossover_a8d02ee5b640897d93e7f607a3c9ea6e9}{operator()}} (S \&s1, S \&s2) noexcept
+\begin{DoxyCompactList}\small\item\em Function call operator overload. Implements the crossover operator functionality. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{structpmnk_1_1UniformCrossover_a1dbafb1f93fd68ebd5f285a88979d7e8}\label{structpmnk_1_1UniformCrossover_a1dbafb1f93fd68ebd5f285a88979d7e8}} 
+double {\bfseries m\+\_\+crossover\+\_\+probability}
+\item 
+\mbox{\Hypertarget{structpmnk_1_1UniformCrossover_abcfe4ce8832af57cf462d821f1a5250d}\label{structpmnk_1_1UniformCrossover_abcfe4ce8832af57cf462d821f1a5250d}} 
+RNG {\bfseries m\+\_\+rng}
+\item 
+\mbox{\Hypertarget{structpmnk_1_1UniformCrossover_ac11ef88141bfdccf105a482479f35200}\label{structpmnk_1_1UniformCrossover_ac11ef88141bfdccf105a482479f35200}} 
+std\+::bernoulli\+\_\+distribution {\bfseries m\+\_\+distrib}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$typename RNG$>$\newline
+struct pmnk\+::\+Uniform\+Crossover$<$ RNG $>$}
+Uniform Crossover operator. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em RNG} & The type for the random number generator object. \\
+\hline
+\end{DoxyTemplParams}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{structpmnk_1_1UniformCrossover_a80251121137ea72de160d6b1d32b91d2}\label{structpmnk_1_1UniformCrossover_a80251121137ea72de160d6b1d32b91d2}} 
+\index{pmnk::UniformCrossover$<$ RNG $>$@{pmnk::UniformCrossover$<$ RNG $>$}!UniformCrossover@{UniformCrossover}}
+\index{UniformCrossover@{UniformCrossover}!pmnk::UniformCrossover$<$ RNG $>$@{pmnk::UniformCrossover$<$ RNG $>$}}
+\doxysubsubsection{\texorpdfstring{UniformCrossover()}{UniformCrossover()}}
+{\footnotesize\ttfamily template$<$typename RNG $>$ \\
+constexpr \mbox{\hyperlink{structpmnk_1_1UniformCrossover}{pmnk\+::\+Uniform\+Crossover}}$<$ RNG $>$\+::\mbox{\hyperlink{structpmnk_1_1UniformCrossover}{Uniform\+Crossover}} (\begin{DoxyParamCaption}\item[{double}]{crossover\+\_\+probability,  }\item[{RNG \&}]{rng }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [constexpr]}}
+
+
+
+Construct a new \mbox{\hyperlink{structpmnk_1_1UniformCrossover}{Uniform\+Crossover}} object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em crossover\+\_\+probability} & Crossover probability considered in this operator. \\
+\hline
+{\em rng} & The random number generator object instance. \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{structpmnk_1_1UniformCrossover_a8d02ee5b640897d93e7f607a3c9ea6e9}\label{structpmnk_1_1UniformCrossover_a8d02ee5b640897d93e7f607a3c9ea6e9}} 
+\index{pmnk::UniformCrossover$<$ RNG $>$@{pmnk::UniformCrossover$<$ RNG $>$}!operator()@{operator()}}
+\index{operator()@{operator()}!pmnk::UniformCrossover$<$ RNG $>$@{pmnk::UniformCrossover$<$ RNG $>$}}
+\doxysubsubsection{\texorpdfstring{operator()()}{operator()()}}
+{\footnotesize\ttfamily template$<$typename RNG $>$ \\
+template$<$typename S  = GASolution$>$ \\
+constexpr void \mbox{\hyperlink{structpmnk_1_1UniformCrossover}{pmnk\+::\+Uniform\+Crossover}}$<$ RNG $>$\+::operator() (\begin{DoxyParamCaption}\item[{S \&}]{s1,  }\item[{S \&}]{s2 }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [constexpr]}, {\ttfamily [noexcept]}}
+
+
+
+Function call operator overload. Implements the crossover operator functionality. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em S} & The type used to store an genetic algorithm (\mbox{\hyperlink{classpmnk_1_1IBEA}{IBEA}}) solution \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em s1} & A solution to be recombinated. \\
+\hline
+{\em s2} & A solution to be recombinated. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/home/pedro/\+Documents/projects/anytime-\/pmnk-\/landscapes/src/\+IBEA/\mbox{\hyperlink{functor_8hpp}{functor.\+hpp}}\end{DoxyCompactItemize}

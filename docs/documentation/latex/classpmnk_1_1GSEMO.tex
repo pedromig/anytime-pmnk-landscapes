@@ -1,0 +1,230 @@
+\hypertarget{classpmnk_1_1GSEMO}{}\doxysection{pmnk\+::GSEMO Class Reference}
+\label{classpmnk_1_1GSEMO}\index{pmnk::GSEMO@{pmnk::GSEMO}}
+
+
+Wrapper class for \mbox{\hyperlink{classpmnk_1_1GSEMO}{GSEMO}}.  
+
+
+
+
+{\ttfamily \#include $<$gsemo.\+hpp$>$}
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename Str  = std\+::string, typename Ref  = Objective\+Vector$>$ }\\\mbox{\hyperlink{classpmnk_1_1GSEMO_a202f27b8961ae56deae8e78ea5c247eb}{GSEMO}} (Str \&\&instance, unsigned int const seed, std\+::ostream \&os, Ref \&\&ref)
+\begin{DoxyCompactList}\small\item\em Construct a new \mbox{\hyperlink{classpmnk_1_1GSEMO}{GSEMO}} object. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Str  = std\+::string$>$ }\\\mbox{\hyperlink{classpmnk_1_1GSEMO_a32865418ea9ffb807d737a36f152914f}{GSEMO}} (Str \&\&instance, unsigned int const seed, std\+::ostream \&os)
+\begin{DoxyCompactList}\small\item\em Construct a new \mbox{\hyperlink{classpmnk_1_1GSEMO}{GSEMO}} object. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Str  = std\+::string, typename Ref  = Objective\+Vector$>$ }\\\mbox{\hyperlink{classpmnk_1_1GSEMO_a3cf0a7bcda8d77acbc27743eec6815b3}{GSEMO}} (Str \&\&instance, unsigned int const seed, Ref \&\&ref)
+\begin{DoxyCompactList}\small\item\em Construct a new \mbox{\hyperlink{classpmnk_1_1GSEMO}{GSEMO}} object. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Str  = std\+::string$>$ }\\\mbox{\hyperlink{classpmnk_1_1GSEMO_a4a66df0bd7e70e3dbe318232599d00b5}{GSEMO}} (Str \&\&instance, unsigned int const seed)
+\begin{DoxyCompactList}\small\item\em Construct a new \mbox{\hyperlink{classpmnk_1_1GSEMO}{GSEMO}} object. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Str  = std\+::string, typename Ref  = Objective\+Vector$>$ }\\\mbox{\hyperlink{classpmnk_1_1GSEMO_ac048b0436d4e6d83daf23d5be663566f}{GSEMO}} (Str \&\&instance, Ref \&\&ref)
+\begin{DoxyCompactList}\small\item\em Construct a new \mbox{\hyperlink{classpmnk_1_1GSEMO}{GSEMO}} object. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Str  = std\+::string$>$ }\\\mbox{\hyperlink{classpmnk_1_1GSEMO_a9196d93d4bc053d12dabc4cbab3be884}{GSEMO}} (Str \&\&instance)
+\begin{DoxyCompactList}\small\item\em Construct a new \mbox{\hyperlink{classpmnk_1_1GSEMO}{GSEMO}} object. \end{DoxyCompactList}\item 
+std\+::vector$<$ \mbox{\hyperlink{classpmnk_1_1Solution}{Solution}} $>$ const \& \mbox{\hyperlink{classpmnk_1_1GSEMO_ab0ceff3993e5ae4665f25556113e8364}{solutions}} () const
+\begin{DoxyCompactList}\small\item\em Getter for the vector of solutions found by this algorithm. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classpmnk_1_1GSEMO_af81417c7e38d7eacb8cb673c59dc673c}{run}} (std\+::size\+\_\+t maxeval)
+\begin{DoxyCompactList}\small\item\em \mbox{\hyperlink{classpmnk_1_1GSEMO}{GSEMO}} implementation runner. This effectively starts the algorithm and runs it until the maximum number of evaluations has been reached. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classpmnk_1_1GSEMO_a0981693f9789cfd6e20b6fdd1e568b23}\label{classpmnk_1_1GSEMO_a0981693f9789cfd6e20b6fdd1e568b23}} 
+\mbox{\hyperlink{classpmnk_1_1RMNKEval}{RMNKEval}} {\bfseries eval}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Wrapper class for \mbox{\hyperlink{classpmnk_1_1GSEMO}{GSEMO}}. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classpmnk_1_1GSEMO_a202f27b8961ae56deae8e78ea5c247eb}\label{classpmnk_1_1GSEMO_a202f27b8961ae56deae8e78ea5c247eb}} 
+\index{pmnk::GSEMO@{pmnk::GSEMO}!GSEMO@{GSEMO}}
+\index{GSEMO@{GSEMO}!pmnk::GSEMO@{pmnk::GSEMO}}
+\doxysubsubsection{\texorpdfstring{GSEMO()}{GSEMO()}\hspace{0.1cm}{\footnotesize\ttfamily [1/6]}}
+{\footnotesize\ttfamily template$<$typename Str  = std\+::string, typename Ref  = Objective\+Vector$>$ \\
+pmnk\+::\+GSEMO\+::\+GSEMO (\begin{DoxyParamCaption}\item[{Str \&\&}]{instance,  }\item[{unsigned int const}]{seed,  }\item[{std\+::ostream \&}]{os,  }\item[{Ref \&\&}]{ref }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Construct a new \mbox{\hyperlink{classpmnk_1_1GSEMO}{GSEMO}} object. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Str} & the type used to store the instance path \\
+\hline
+{\em Ref} & the type used to store the reference point of the hvobj obj \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em instance} & The path for the \char`\"{}rmnk\char`\"{} instance (.dat) file to be used. These files can be generated using the rmnk\+Generator.\+R script \\
+\hline
+{\em seed} & The seed used by the pseudo random number generator used in \mbox{\hyperlink{classpmnk_1_1GSEMO}{GSEMO}} \\
+\hline
+{\em os} & The name of the output file where the standard output stream should be redirected \\
+\hline
+{\em ref} & The reference point considered by hypervolume indicator whilst running the algorithms (anytime measure) \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classpmnk_1_1GSEMO_a32865418ea9ffb807d737a36f152914f}\label{classpmnk_1_1GSEMO_a32865418ea9ffb807d737a36f152914f}} 
+\index{pmnk::GSEMO@{pmnk::GSEMO}!GSEMO@{GSEMO}}
+\index{GSEMO@{GSEMO}!pmnk::GSEMO@{pmnk::GSEMO}}
+\doxysubsubsection{\texorpdfstring{GSEMO()}{GSEMO()}\hspace{0.1cm}{\footnotesize\ttfamily [2/6]}}
+{\footnotesize\ttfamily template$<$typename Str  = std\+::string$>$ \\
+pmnk\+::\+GSEMO\+::\+GSEMO (\begin{DoxyParamCaption}\item[{Str \&\&}]{instance,  }\item[{unsigned int const}]{seed,  }\item[{std\+::ostream \&}]{os }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Construct a new \mbox{\hyperlink{classpmnk_1_1GSEMO}{GSEMO}} object. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Str} & the type used to store the instance path \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em instance} & The path for the \char`\"{}rmnk\char`\"{} instance (.dat) file to be used. These files can be generated using the rmnk\+Generator.\+R script \\
+\hline
+{\em seed} & The seed used by the pseudo random number generator used in \mbox{\hyperlink{classpmnk_1_1GSEMO}{GSEMO}} \\
+\hline
+{\em os} & The name of the output file where the standard output stream should be redirected \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classpmnk_1_1GSEMO_a3cf0a7bcda8d77acbc27743eec6815b3}\label{classpmnk_1_1GSEMO_a3cf0a7bcda8d77acbc27743eec6815b3}} 
+\index{pmnk::GSEMO@{pmnk::GSEMO}!GSEMO@{GSEMO}}
+\index{GSEMO@{GSEMO}!pmnk::GSEMO@{pmnk::GSEMO}}
+\doxysubsubsection{\texorpdfstring{GSEMO()}{GSEMO()}\hspace{0.1cm}{\footnotesize\ttfamily [3/6]}}
+{\footnotesize\ttfamily template$<$typename Str  = std\+::string, typename Ref  = Objective\+Vector$>$ \\
+pmnk\+::\+GSEMO\+::\+GSEMO (\begin{DoxyParamCaption}\item[{Str \&\&}]{instance,  }\item[{unsigned int const}]{seed,  }\item[{Ref \&\&}]{ref }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Construct a new \mbox{\hyperlink{classpmnk_1_1GSEMO}{GSEMO}} object. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Str} & the type used to store the instance path \\
+\hline
+{\em Ref} & the type used to store the reference point of the hvobj obj \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em instance} & The path for the \char`\"{}rmnk\char`\"{} instance (.dat) file to be used. These files can be generated using the rmnk\+Generator.\+R script \\
+\hline
+{\em seed} & The seed used by the pseudo random number generator used in \mbox{\hyperlink{classpmnk_1_1GSEMO}{GSEMO}} \\
+\hline
+{\em os} & The name of the output file where the standard output stream should be redirected \\
+\hline
+{\em ref} & The reference point considered by hypervolume indicator whilst running the algorithms (anytime measure) \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classpmnk_1_1GSEMO_a4a66df0bd7e70e3dbe318232599d00b5}\label{classpmnk_1_1GSEMO_a4a66df0bd7e70e3dbe318232599d00b5}} 
+\index{pmnk::GSEMO@{pmnk::GSEMO}!GSEMO@{GSEMO}}
+\index{GSEMO@{GSEMO}!pmnk::GSEMO@{pmnk::GSEMO}}
+\doxysubsubsection{\texorpdfstring{GSEMO()}{GSEMO()}\hspace{0.1cm}{\footnotesize\ttfamily [4/6]}}
+{\footnotesize\ttfamily template$<$typename Str  = std\+::string$>$ \\
+pmnk\+::\+GSEMO\+::\+GSEMO (\begin{DoxyParamCaption}\item[{Str \&\&}]{instance,  }\item[{unsigned int const}]{seed }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Construct a new \mbox{\hyperlink{classpmnk_1_1GSEMO}{GSEMO}} object. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Str} & the type used to store the instance path \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em instance} & The path for the \char`\"{}rmnk\char`\"{} instance (.dat) file to be used. These files can be generated using the rmnk\+Generator.\+R script \\
+\hline
+{\em seed} & The seed used by the pseudo random number generator used in \mbox{\hyperlink{classpmnk_1_1GSEMO}{GSEMO}} \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classpmnk_1_1GSEMO_ac048b0436d4e6d83daf23d5be663566f}\label{classpmnk_1_1GSEMO_ac048b0436d4e6d83daf23d5be663566f}} 
+\index{pmnk::GSEMO@{pmnk::GSEMO}!GSEMO@{GSEMO}}
+\index{GSEMO@{GSEMO}!pmnk::GSEMO@{pmnk::GSEMO}}
+\doxysubsubsection{\texorpdfstring{GSEMO()}{GSEMO()}\hspace{0.1cm}{\footnotesize\ttfamily [5/6]}}
+{\footnotesize\ttfamily template$<$typename Str  = std\+::string, typename Ref  = Objective\+Vector$>$ \\
+pmnk\+::\+GSEMO\+::\+GSEMO (\begin{DoxyParamCaption}\item[{Str \&\&}]{instance,  }\item[{Ref \&\&}]{ref }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [explicit]}}
+
+
+
+Construct a new \mbox{\hyperlink{classpmnk_1_1GSEMO}{GSEMO}} object. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Str} & the type used to store the instance path \\
+\hline
+{\em Ref} & the type used to store the reference point of the hvobj obj \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em instance} & The path for the \char`\"{}rmnk\char`\"{} instance (.dat) file to be used. These files can be generated using the rmnk\+Generator.\+R script \\
+\hline
+{\em ref} & The reference point considered by hypervolume indicator whilst running the algorithms (anytime measure) \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classpmnk_1_1GSEMO_a9196d93d4bc053d12dabc4cbab3be884}\label{classpmnk_1_1GSEMO_a9196d93d4bc053d12dabc4cbab3be884}} 
+\index{pmnk::GSEMO@{pmnk::GSEMO}!GSEMO@{GSEMO}}
+\index{GSEMO@{GSEMO}!pmnk::GSEMO@{pmnk::GSEMO}}
+\doxysubsubsection{\texorpdfstring{GSEMO()}{GSEMO()}\hspace{0.1cm}{\footnotesize\ttfamily [6/6]}}
+{\footnotesize\ttfamily template$<$typename Str  = std\+::string$>$ \\
+pmnk\+::\+GSEMO\+::\+GSEMO (\begin{DoxyParamCaption}\item[{Str \&\&}]{instance }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [explicit]}}
+
+
+
+Construct a new \mbox{\hyperlink{classpmnk_1_1GSEMO}{GSEMO}} object. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Str} & the type used to store the instance path \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em instance} & The path for the \char`\"{}rmnk\char`\"{} instance (.dat) file to be used. These files can be generated using the rmnk\+Generator.\+R script \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classpmnk_1_1GSEMO_af81417c7e38d7eacb8cb673c59dc673c}\label{classpmnk_1_1GSEMO_af81417c7e38d7eacb8cb673c59dc673c}} 
+\index{pmnk::GSEMO@{pmnk::GSEMO}!run@{run}}
+\index{run@{run}!pmnk::GSEMO@{pmnk::GSEMO}}
+\doxysubsubsection{\texorpdfstring{run()}{run()}}
+{\footnotesize\ttfamily void pmnk\+::\+GSEMO\+::run (\begin{DoxyParamCaption}\item[{std\+::size\+\_\+t}]{maxeval }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+\mbox{\hyperlink{classpmnk_1_1GSEMO}{GSEMO}} implementation runner. This effectively starts the algorithm and runs it until the maximum number of evaluations has been reached. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em maxeval} & The maximum number of evaluations performed by \mbox{\hyperlink{classpmnk_1_1GSEMO}{GSEMO}} (stopping criterion) \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classpmnk_1_1GSEMO_ab0ceff3993e5ae4665f25556113e8364}\label{classpmnk_1_1GSEMO_ab0ceff3993e5ae4665f25556113e8364}} 
+\index{pmnk::GSEMO@{pmnk::GSEMO}!solutions@{solutions}}
+\index{solutions@{solutions}!pmnk::GSEMO@{pmnk::GSEMO}}
+\doxysubsubsection{\texorpdfstring{solutions()}{solutions()}}
+{\footnotesize\ttfamily std\+::vector$<$ \mbox{\hyperlink{classpmnk_1_1Solution}{Solution}} $>$ const  \& pmnk\+::\+GSEMO\+::solutions (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Getter for the vector of solutions found by this algorithm. 
+
+\begin{DoxyReturn}{Returns}
+std\+::vector$<$\+Solution$>$ const\& Read-\/\+Only reference to a vector of solutions found by the \mbox{\hyperlink{classpmnk_1_1GSEMO}{GSEMO}} algorithm. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/home/pedro/\+Documents/projects/anytime-\/pmnk-\/landscapes/src/\+GSEMO/\mbox{\hyperlink{gsemo_8hpp}{gsemo.\+hpp}}\end{DoxyCompactItemize}

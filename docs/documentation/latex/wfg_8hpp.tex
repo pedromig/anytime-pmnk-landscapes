@@ -1,0 +1,246 @@
+\hypertarget{wfg_8hpp}{}\doxysection{/home/pedro/\+Documents/projects/anytime-\/pmnk-\/landscapes/src/\+Utils/wfg.hpp File Reference}
+\label{wfg_8hpp}\index{/home/pedro/Documents/projects/anytime-\/pmnk-\/landscapes/src/Utils/wfg.hpp@{/home/pedro/Documents/projects/anytime-\/pmnk-\/landscapes/src/Utils/wfg.hpp}}
+
+
+Implementation of the wfg algorithm to calculate hypervolumes.  
+
+
+{\ttfamily \#include $<$algorithm$>$}\newline
+{\ttfamily \#include $<$array$>$}\newline
+{\ttfamily \#include $<$limits$>$}\newline
+{\ttfamily \#include $<$type\+\_\+traits$>$}\newline
+{\ttfamily \#include $<$vector$>$}\newline
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classpmnk_1_1hvobj}{pmnk\+::hvobj$<$ T $>$}}
+\begin{DoxyCompactList}\small\item\em Implementation of an API that supports among others, set/point hypervolume calculations (using the WFG algorithm) \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename T $>$ }\\auto \mbox{\hyperlink{wfg_8hpp_a7b81975c627cca82a36360252187f14a}{pmnk\+::weakly\+\_\+dominates}} (T const \&lhs, T const \&rhs)
+\begin{DoxyCompactList}\small\item\em Check pareto weakly dominance between two points. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T $>$ }\\void \mbox{\hyperlink{wfg_8hpp_a97e1efebc59985cb58fdf94cf847655a}{pmnk\+::insert\+\_\+non\+\_\+dominated}} (T \&\&sol, std\+::vector$<$ T $>$ \&set)
+\begin{DoxyCompactList}\small\item\em Insert a point (solution) into a non dominated (solution) set of points. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Iter , typename T $>$ }\\auto \mbox{\hyperlink{wfg_8hpp_a1d7cb896483ca8ce1d61bf797c4a13a0}{pmnk\+::limit\+\_\+set}} (Iter begin, Iter end, T const \&sol)
+\begin{DoxyCompactList}\small\item\em Limit the set of points by replacing them with the points whose value in each objective is limited to be no better than the contributing point. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T , typename R $>$ }\\auto \mbox{\hyperlink{wfg_8hpp_a152f9414469f374f069737088eaf729e}{pmnk\+::point\+\_\+hv}} (T const \&p, R const \&r)
+\begin{DoxyCompactList}\small\item\em Compute hypervolume of a point in relation to a reference. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename S , typename T $>$ }\\std\+::common\+\_\+type\+\_\+t$<$ typename S\+::value\+\_\+type\+::value\+\_\+type, typename T\+::value\+\_\+type $>$ \mbox{\hyperlink{wfg_8hpp_ac021811f6098ee6dc31631bc691a2599}{pmnk\+::set\+\_\+hv\+\_\+wfg}} (S const \&s, T const \&ref)
+\begin{DoxyCompactList}\small\item\em Compute a set hypervolume value given a reference point using the wfg algorithm. (Worker function) \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename S , typename T $>$ }\\auto \mbox{\hyperlink{wfg_8hpp_a785926e7f8db52da4427d0334fc6e694}{pmnk\+::set\+\_\+hv}} (S const \&s, T const \&ref)
+\begin{DoxyCompactList}\small\item\em Compute a set hypervolume value given a reference point using the wfg algorithm. (Wrapper function) \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T , typename S , typename R $>$ }\\auto \mbox{\hyperlink{wfg_8hpp_a74f776ddb26dd53ce994d6aa65d4b961}{pmnk\+::point\+\_\+hvc}} (T const \&p, S const \&s, R const \&ref)
+\begin{DoxyCompactList}\small\item\em Calculate a point hypervolume contribution to a set. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Implementation of the wfg algorithm to calculate hypervolumes. 
+
+\begin{DoxyAuthor}{Author}
+Alexandre Jesus (\href{mailto:ajesus@dei.uc.pt}{\texttt{ ajesus@dei.\+uc.\+pt}}) 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+13-\/09-\/2021 
+\end{DoxyDate}
+\begin{DoxyCopyright}{Copyright}
+Copyright (c) 2021 
+\end{DoxyCopyright}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{wfg_8hpp_a97e1efebc59985cb58fdf94cf847655a}\label{wfg_8hpp_a97e1efebc59985cb58fdf94cf847655a}} 
+\index{wfg.hpp@{wfg.hpp}!insert\_non\_dominated@{insert\_non\_dominated}}
+\index{insert\_non\_dominated@{insert\_non\_dominated}!wfg.hpp@{wfg.hpp}}
+\doxysubsubsection{\texorpdfstring{insert\_non\_dominated()}{insert\_non\_dominated()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+void pmnk\+::insert\+\_\+non\+\_\+dominated (\begin{DoxyParamCaption}\item[{T \&\&}]{sol,  }\item[{std\+::vector$<$ T $>$ \&}]{set }\end{DoxyParamCaption})}
+
+
+
+Insert a point (solution) into a non dominated (solution) set of points. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & The type for the point being supplied as a parameter. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em sol} & The point (solution) to be added to the set \\
+\hline
+{\em set} & The (solution) set of non dominated points (solutions) \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{wfg_8hpp_a1d7cb896483ca8ce1d61bf797c4a13a0}\label{wfg_8hpp_a1d7cb896483ca8ce1d61bf797c4a13a0}} 
+\index{wfg.hpp@{wfg.hpp}!limit\_set@{limit\_set}}
+\index{limit\_set@{limit\_set}!wfg.hpp@{wfg.hpp}}
+\doxysubsubsection{\texorpdfstring{limit\_set()}{limit\_set()}}
+{\footnotesize\ttfamily template$<$typename Iter , typename T $>$ \\
+auto pmnk\+::limit\+\_\+set (\begin{DoxyParamCaption}\item[{Iter}]{begin,  }\item[{Iter}]{end,  }\item[{T const \&}]{sol }\end{DoxyParamCaption})}
+
+
+
+Limit the set of points by replacing them with the points whose value in each objective is limited to be no better than the contributing point. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Iter} & The type for and iterator of a set of points \\
+\hline
+{\em T} & The type for the contributing point being supplied as a parameter \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em begin} & An iterator for the begining of the set \\
+\hline
+{\em end} & An iterator for the end of the set \\
+\hline
+{\em sol} & The contributing solution \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+auto The limited set 
+\end{DoxyReturn}
+\mbox{\Hypertarget{wfg_8hpp_a152f9414469f374f069737088eaf729e}\label{wfg_8hpp_a152f9414469f374f069737088eaf729e}} 
+\index{wfg.hpp@{wfg.hpp}!point\_hv@{point\_hv}}
+\index{point\_hv@{point\_hv}!wfg.hpp@{wfg.hpp}}
+\doxysubsubsection{\texorpdfstring{point\_hv()}{point\_hv()}}
+{\footnotesize\ttfamily template$<$typename T , typename R $>$ \\
+auto pmnk\+::point\+\_\+hv (\begin{DoxyParamCaption}\item[{T const \&}]{p,  }\item[{R const \&}]{r }\end{DoxyParamCaption})}
+
+
+
+Compute hypervolume of a point in relation to a reference. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & The type for the point being supplied as a parameter \\
+\hline
+{\em R} & The type for the reference being supplied as a parameter \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em p} & The point whose hypervolume value is to be computed \\
+\hline
+{\em r} & The reference point. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+auto The hypervolume value. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{wfg_8hpp_a74f776ddb26dd53ce994d6aa65d4b961}\label{wfg_8hpp_a74f776ddb26dd53ce994d6aa65d4b961}} 
+\index{wfg.hpp@{wfg.hpp}!point\_hvc@{point\_hvc}}
+\index{point\_hvc@{point\_hvc}!wfg.hpp@{wfg.hpp}}
+\doxysubsubsection{\texorpdfstring{point\_hvc()}{point\_hvc()}}
+{\footnotesize\ttfamily template$<$typename T , typename S , typename R $>$ \\
+auto pmnk\+::point\+\_\+hvc (\begin{DoxyParamCaption}\item[{T const \&}]{p,  }\item[{S const \&}]{s,  }\item[{R const \&}]{ref }\end{DoxyParamCaption})}
+
+
+
+Calculate a point hypervolume contribution to a set. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em S} & The type for the set supplied as a parameter. \\
+\hline
+{\em T} & The type for the point being supplied as a parameter. \\
+\hline
+{\em R} & The type for the reference point supplied as a parameter. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em p} & The point whose contribution is going to calculated. \\
+\hline
+{\em s} & The solution set. \\
+\hline
+{\em ref} & The reference point. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+auto The point hypervolume contribution. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{wfg_8hpp_a785926e7f8db52da4427d0334fc6e694}\label{wfg_8hpp_a785926e7f8db52da4427d0334fc6e694}} 
+\index{wfg.hpp@{wfg.hpp}!set\_hv@{set\_hv}}
+\index{set\_hv@{set\_hv}!wfg.hpp@{wfg.hpp}}
+\doxysubsubsection{\texorpdfstring{set\_hv()}{set\_hv()}}
+{\footnotesize\ttfamily template$<$typename S , typename T $>$ \\
+auto pmnk\+::set\+\_\+hv (\begin{DoxyParamCaption}\item[{S const \&}]{s,  }\item[{T const \&}]{ref }\end{DoxyParamCaption})}
+
+
+
+Compute a set hypervolume value given a reference point using the wfg algorithm. (Wrapper function) 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em S} & The type for the set supplied as a parameter \\
+\hline
+{\em T} & The type for the point being supplied as a parameter \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em s} & The solution set \\
+\hline
+{\em ref} & The reference point. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+std\+::common\+\_\+type\+\_\+t$<$typename S\+::value\+\_\+type\+::value\+\_\+type, typename T\+::value\+\_\+type$>$ The resulting set hypervolume value. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{wfg_8hpp_ac021811f6098ee6dc31631bc691a2599}\label{wfg_8hpp_ac021811f6098ee6dc31631bc691a2599}} 
+\index{wfg.hpp@{wfg.hpp}!set\_hv\_wfg@{set\_hv\_wfg}}
+\index{set\_hv\_wfg@{set\_hv\_wfg}!wfg.hpp@{wfg.hpp}}
+\doxysubsubsection{\texorpdfstring{set\_hv\_wfg()}{set\_hv\_wfg()}}
+{\footnotesize\ttfamily template$<$typename S , typename T $>$ \\
+std\+::common\+\_\+type\+\_\+t$<$ typename S\+::value\+\_\+type\+::value\+\_\+type, typename T\+::value\+\_\+type $>$ pmnk\+::set\+\_\+hv\+\_\+wfg (\begin{DoxyParamCaption}\item[{S const \&}]{s,  }\item[{T const \&}]{ref }\end{DoxyParamCaption})}
+
+
+
+Compute a set hypervolume value given a reference point using the wfg algorithm. (Worker function) 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em S} & The type for the set supplied as a parameter \\
+\hline
+{\em T} & The type for the point being supplied as a parameter \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em s} & The solution set \\
+\hline
+{\em ref} & The reference point. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+std\+::common\+\_\+type\+\_\+t$<$typename S\+::value\+\_\+type\+::value\+\_\+type, typename T\+::value\+\_\+type$>$ The resulting set hypervolume value. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{wfg_8hpp_a7b81975c627cca82a36360252187f14a}\label{wfg_8hpp_a7b81975c627cca82a36360252187f14a}} 
+\index{wfg.hpp@{wfg.hpp}!weakly\_dominates@{weakly\_dominates}}
+\index{weakly\_dominates@{weakly\_dominates}!wfg.hpp@{wfg.hpp}}
+\doxysubsubsection{\texorpdfstring{weakly\_dominates()}{weakly\_dominates()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+auto pmnk\+::weakly\+\_\+dominates (\begin{DoxyParamCaption}\item[{T const \&}]{lhs,  }\item[{T const \&}]{rhs }\end{DoxyParamCaption})}
+
+
+
+Check pareto weakly dominance between two points. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & The type for the point being supplied as a parameter. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em lhs} & The first point (left hand side point) \\
+\hline
+{\em lhs} & The second point (left hand side point) \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+auto A boolean with the value true if the left hand side point (lhs) weakly dominated the right hand side point (rhs) 
+\end{DoxyReturn}
