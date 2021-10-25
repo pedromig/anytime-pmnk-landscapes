@@ -5,7 +5,7 @@
  * @brief IBEA (Indicator Based Evolutionary Algorithm) implementation
  * @version 0.1.0
  * @date 13-09-2021
- * 
+ *
  * @copyright Copyright (c) 2021
  */
 
@@ -25,106 +25,80 @@ namespace pmnk {
 
 /// Wrapper class for IBEA
 class IBEA {
+  using hv_t = typename ObjectiveVector::value_type;
+
  public:
   RMNKEval eval;
 
  private:
   std::mt19937 m_generator;
-  std::ostream &m_os;
 
   hvobj<ObjectiveVector::value_type> m_hvo;
+  std::vector<std::tuple<std::size_t, std::size_t, hv_t>> m_anytime;
+
   std::vector<GASolution> m_solutions;
 
  public:
   /**
    * @brief Construct a new IBEA object
-   * 
+   *
    * @tparam Str the type used to store the instance path
-   * @tparam Ref the type used to store the reference point of the hvobj obj 
-   * @param instance The path for the "rmnk" instance (.dat) file to be used. 
-   *        These files can be generated using the rmnkGenerator.R script 
+   * @tparam Ref the type used to store the reference point of the hvobj obj
+   * @param instance The path for the "rmnk" instance (.dat) file to be used.
+   *        These files can be generated using the rmnkGenerator.R script
    * @param seed The seed used by the pseudo random number generator used in IBEA
-   * @param os The name of the output file where the standard output stream should be redirected 
-   * @param ref The reference point considered by hypervolume indicator whilst running the algorithms (anytime measure)
+   * @param ref The reference point considered by hypervolume indicator whilst running the
+   * algorithms (anytime measure)
    */
   template <typename Str = std::string, typename Ref = ObjectiveVector>
-  IBEA(Str &&instance, unsigned int const seed, std::ostream &os, Ref &&ref)
+  IBEA(Str &&instance, unsigned int const seed, Ref &&ref)
       : eval(std::forward<Str>(instance).c_str())
       , m_generator(seed)
-      , m_os(os)
       , m_hvo(std::forward<Ref>(ref)) {}
 
   /**
    * @brief Construct a new IBEA object
-   * 
+   *
    * @tparam Str the type used to store the instance path
-   * @param instance The path for the "rmnk" instance (.dat) file to be used. 
-   *        These files can be generated using the rmnkGenerator.R script 
-   * @param seed The seed used by the pseudo random number generator used in IBEA
-   * @param os The name of the output file where the standard output stream should be redirected 
-   */
-  template <typename Str = std::string>
-  IBEA(Str &&instance, unsigned int const seed, std::ostream &os)
-      : eval(std::forward<Str>(instance).c_str())
-      , m_generator(seed)
-      , m_os(os)
-      , m_hvo(ObjectiveVector(eval.getM(), 0.0)) {}
-
-  /**
-   * @brief Construct a new IBEA object
-   * 
-   * @tparam Str the type used to store the instance path
-   * @tparam Ref the type used to store the reference point of the hvobj obj 
-   * @param instance The path for the "rmnk" instance (.dat) file to be used. 
-   *        These files can be generated using the rmnkGenerator.R script 
-   * @param seed The seed used by the pseudo random number generator used in IBEA
-   * @param ref The reference point considered by hypervolume indicator whilst running the algorithms (anytime measure)
-   */
-  template <typename Str = std::string, typename Ref = ObjectiveVector>
-  IBEA(Str &&instance, unsigned int const seed, Ref &&ref)
-      : IBEA(std::forward<Str>(instance), seed, std::cout, std::forward<Ref>(ref)) {}
-
-  /**
-   * @brief Construct a new IBEA object
-   * 
-   * @tparam Str the type used to store the instance path
-   * @param instance The path for the "rmnk" instance (.dat) file to be used. 
-   *        These files can be generated using the rmnkGenerator.R script 
+   * @param instance The path for the "rmnk" instance (.dat) file to be used.
+   *        These files can be generated using the rmnkGenerator.R script
    * @param seed The seed used by the pseudo random number generator used in IBEA
    */
   template <typename Str = std::string>
   IBEA(Str &&instance, unsigned int const seed)
-      : IBEA(std::forward<Str>(instance), seed, std::cout) {}
+      : eval(std::forward<Str>(instance).c_str())
+      , m_generator(seed)
+      , m_hvo(ObjectiveVector(eval.getM(), 0.0)) {}
 
   /**
    * @brief Construct a new IBEA object
-   * 
+   *
    * @tparam Str the type used to store the instance path
-   * @tparam Ref the type used to store the reference point of the hvobj obj 
-   * @param instance The path for the "rmnk" instance (.dat) file to be used. 
-   *        These files can be generated using the rmnkGenerator.R script 
+   * @tparam Ref the type used to store the reference point of the hvobj obj
+   * @param instance The path for the "rmnk" instance (.dat) file to be used.
+   *        These files can be generated using the rmnkGenerator.R script
    * @param seed The seed used by the pseudo random number generator used in IBEA
-   * @param ref The reference point considered by hypervolume indicator whilst running the algorithms (anytime measure)
+   * @param ref The reference point considered by hypervolume indicator whilst running the
+   * algorithms (anytime measure)
    */
   template <typename Str = std::string, typename Ref = ObjectiveVector>
   explicit IBEA(Str &&instance, Ref &&ref)
-      : IBEA(std::forward<Str>(instance), std::random_device()(), std::cout,
-             std::forward<Ref>(ref)) {}
+      : IBEA(std::forward<Str>(instance), std::random_device()(), std::forward<Ref>(ref)) {}
 
   /**
    * @brief Construct a new IBEA object
-   * 
+   *
    * @tparam Str the type used to store the instance path
-   * @param instance The path for the "rmnk" instance (.dat) file to be used. 
-   *        These files can be generated using the rmnkGenerator.R script 
+   * @param instance The path for the "rmnk" instance (.dat) file to be used.
+   *        These files can be generated using the rmnkGenerator.R script
    */
   template <typename Str = std::string>
   explicit IBEA(Str &&instance)
-      : IBEA(std::forward<Str>(instance), std::random_device()(), std::cout) {}
+      : IBEA(std::forward<Str>(instance), std::random_device()()) {}
 
   /**
    * @brief Getter for the vector of solutions found by this algorithm.
-   * 
+   *
    * @return std::vector<Solution> const& Read-Only reference to a vector of solutions
    *         found by the IBEA.
    */
@@ -133,21 +107,33 @@ class IBEA {
   }
 
   /**
+   * @brief Getter for the anytime data produced by this algorithm.
+   *
+   * @return std::vecto<std::tuple<std::size_t, hv_t>> const&
+   *         Read-Only reference to a vector of pairs <evaluation,
+   *         hypervolume> obtained in the run of IBEA.
+   */
+  auto const &anytime() const {
+    return m_anytime;
+  }
+
+  /**
    * @brief IBEA implementation runner. This effectively starts the algorithm and runs it
    * until the maximum number of evaluations has been reached.
-   * 
-   * @tparam I The type used to store an IBEA indicator 
-   * @tparam S The type used to store an IBEA selection operator 
-   * @tparam M The type used to store and IBEA mutation operator 
+   *
+   * @tparam I The type used to store an IBEA indicator
+   * @tparam S The type used to store an IBEA selection operator
+   * @tparam M The type used to store and IBEA mutation operator
    * @tparam C The type used to store and IBEA crossover operator
-   * @param maxeval The maximum number of evaluations performed by the algorithms (stopping criterion)
+   * @param maxeval The maximum number of evaluations performed by the algorithms (stopping
+   * criterion)
    * @param population_max_size The maximum population size
-   * @param max_generations The maximum number of generations 
-   * @param scaling_factor The scaling factor 
-   * @param indicator  The indicator to be used by the IBEA indicator operator 
-   * @param crossover_method The crossover method considered by the IBEA mutation operator 
-   * @param mutation_method The mutation method considered by the IBEA mutation operator 
-   * @param selection_method The selection method considered by the IBEA selection operator 
+   * @param max_generations The maximum number of generations
+   * @param scaling_factor The scaling factor
+   * @param indicator  The indicator to be used by the IBEA indicator operator
+   * @param crossover_method The crossover method considered by the IBEA mutation operator
+   * @param mutation_method The mutation method considered by the IBEA mutation operator
+   * @param selection_method The selection method considered by the IBEA selection operator
    * @param adaptive boolean indicative of version of IBEA to be used.
    *                   If true use adaptive version of (A-IBEA) else use (B-IBEA)
    */
@@ -168,21 +154,22 @@ class IBEA {
   /**
    * @brief IBEA implementation runner. This effectively starts the algorithm and runs it
    * until the maximum number of evaluations has been reached.
-   * 
+   *
    * @tparam Adaptive boolean template type indicative of version of IBEA to be used.
    *                    If true use adaptive version of (A-IBEA) else use (B-IBEA)
-   * @tparam I The type used to store an IBEA indicator 
-   * @tparam S The type used to store an IBEA selection operator 
-   * @tparam M The type used to store and IBEA mutation operator 
+   * @tparam I The type used to store an IBEA indicator
+   * @tparam S The type used to store an IBEA selection operator
+   * @tparam M The type used to store and IBEA mutation operator
    * @tparam C The type used to store and IBEA crossover operator
-   * @param maxeval The maximum number of evaluations performed by the algorithms (stopping criterion)
+   * @param maxeval The maximum number of evaluations performed by the algorithms (stopping
+   * criterion)
    * @param pop_max The maximum population size
    * @param max_generations The maximum number of generations
    * @param scaling_factor The scaling factor
-   * @param indicator  The indicator to be used by the IBEA indicator operator 
-   * @param crossover_method The crossover method considered by the IBEA mutation operator 
-   * @param mutation_method The mutation method considered by the IBEA mutation operator 
-   * @param selection_method The selection method considered by the IBEA selection operator 
+   * @param indicator  The indicator to be used by the IBEA indicator operator
+   * @param crossover_method The crossover method considered by the IBEA mutation operator
+   * @param mutation_method The mutation method considered by the IBEA mutation operator
+   * @param selection_method The selection method considered by the IBEA selection operator
    */
   template <bool Adaptive, typename I, typename S, typename M, typename C>
   void m_run(std::size_t const maxeval, std::size_t const pop_max,
@@ -194,13 +181,11 @@ class IBEA {
     std::vector<GASolution> population;
     population.reserve(pop_max);
 
-    std::cout << "evaluation,generation,hypervolume\n";
-
     for (std::size_t i = 0; i < pop_max && evaluation < maxeval; ++i) {
       auto sol = GASolution(Solution::random_solution(eval, m_generator));
       if (add_non_dominated(m_solutions, sol)) {
         m_hvo.insert(sol.objective_vector());
-        m_os << std::setprecision(12) << evaluation << "," << gen << "," << m_hvo.value() << "\n";
+        m_anytime.push_back({evaluation, gen, m_hvo.value()});
       }
       population.push_back(std::move(sol));
       ++evaluation;
@@ -233,20 +218,20 @@ class IBEA {
       for (auto &individual : matting_pool) {
         if (add_non_dominated(m_solutions, individual)) {
           m_hvo.insert(individual.objective_vector());
-          m_os << std::setprecision(12) << evaluation << "," << gen << "," << m_hvo.value() << "\n";
+          m_anytime.push_back({evaluation, gen, m_hvo.value()});
         }
         population.push_back(std::move(individual));
         ++evaluation;
       }
       m_environmental_selection(population, scaling_factor * c, pop_max, indicator);
     }
-    m_os << std::setprecision(12) << evaluation << "," << gen << "," << m_hvo.value() << "\n";
+    m_anytime.push_back({evaluation, gen, m_hvo.value()});
   }
 
   /**
    * @brief Calculate objective functions lower and upper bounds
-   *        for scaling  
-   * 
+   *        for scaling
+   *
    * @tparam S The type for the genetic algorithm's solution
    * @param population The IBEA population to be scaled
    * @return auto A pair containing the upper and lower objective value bounds
@@ -267,11 +252,11 @@ class IBEA {
   /**
    * @brief Scale population objective vectors values using the bounds
    *        previously calculated for the population.
-   * 
+   *
    * @tparam S The type for the genetic algorithm's solution
    * @param population The IBEA population to be scaled
-   * @param lb The population objective vectors lower bound 
-   * @param ub the population objective vectors upper bound 
+   * @param lb The population objective vectors lower bound
+   * @param ub the population objective vectors upper bound
    * @return auto The population with the objective vectors scaled
    */
   template <typename S = GASolution>
@@ -289,9 +274,9 @@ class IBEA {
   }
 
   /**
-   * @brief Calculate the adaptive factor for IBEA 
-   * 
-   * @tparam I The type for the IBEA indicator 
+   * @brief Calculate the adaptive factor for IBEA
+   *
+   * @tparam I The type for the IBEA indicator
    * @tparam S The type for the genetic algorithm's solution
    * @param population The IBEA population to be scaled
    * @param indicator The indicator used by IBEA
@@ -314,7 +299,7 @@ class IBEA {
 
   /**
    * @brief Calculate the fitness values for the population individuals.
-   * 
+   *
    * @tparam I The type for the IBEA indicator.
    * @tparam S The type for the genetic algorithm's solution.
    * @param population The IBEA population to be scaled.
@@ -338,7 +323,7 @@ class IBEA {
    * @brief Do the environmental selection step on the IBEA population.
    *        Reduce the number of individuals (that was increased after the matting process)
    *        to the maximum size allowed.
-   * 
+   *
    * @tparam I The type for the IBEA indicator.
    * @tparam S The type for the genetic algorithm's solution.
    * @param population The IBEA population from which the individuals will be selected.

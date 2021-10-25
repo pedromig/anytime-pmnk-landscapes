@@ -5,9 +5,9 @@
  * @brief PLS (Pareto Local Search) algorithm implementation
  * @version 0.1.0
  * @date 13-09-2021
- * 
+ *
  * @copyright Copyright (c) 2021
- * 
+ *
  */
 
 #ifndef PLS_HPP
@@ -38,108 +38,81 @@ enum class PLSExplorationCriterion { BEST_IMPROVEMENT, FIRST_IMPROVEMENT, BOTH }
 
 /// Wrapper class for PLS
 class PLS {
+  using hv_t = typename ObjectiveVector::value_type;
+
  public:
   RMNKEval eval;
 
  private:
   std::mt19937 m_generator;
-  std::ostream &m_os;
 
-  hvobj<typename ObjectiveVector::value_type> m_hvo;
+  hvobj<hv_t> m_hvo;
+  std::vector<std::tuple<std::size_t, hv_t>> m_anytime;
+
   std::vector<Solution> m_solutions;
   std::vector<Solution> m_non_visited_solutions;
 
  public:
-
   /**
-  * @brief Construct a new PLS object
-  * 
-  * @tparam Str the type used to store the instance path
-  * @tparam Ref the type used to store the reference point of the hvobj obj 
-  * @param instance The path for the "rmnk" instance (.dat) file to be used. 
-  *        These files can be generated using the rmnkGenerator.R script 
-  * @param seed The seed used by the pseudo random number generator used in PLS 
-  * @param os The name of the output file where the standard output stream should be redirected 
-  * @param ref The reference point considered by hypervolume indicator whilst running the algorithms (anytime measure)
-  */
+   * @brief Construct a new PLS object
+   *
+   * @tparam Str the type used to store the instance path
+   * @tparam Ref the type used to store the reference point of the hvobj obj
+   * @param instance The path for the "rmnk" instance (.dat) file to be used.
+   *        These files can be generated using the rmnkGenerator.R script
+   * @param seed The seed used by the pseudo random number generator used in PLS
+   * @param ref The reference point considered by hypervolume indicator whilst running the
+   * algorithms (anytime measure)
+   */
   template <typename Str = std::string, typename Ref = ObjectiveVector>
-  PLS(Str &&instance, unsigned int seed, std::ostream &os, Ref &&ref)
+  PLS(Str &&instance, unsigned int seed, Ref &&ref)
       : eval(std::forward<Str>(instance).c_str())
       , m_generator(seed)
-      , m_os(os)
       , m_hvo(std::forward<Ref>(ref)) {}
 
   /**
    * @brief Construct a new PLS object
-   * 
+   *
    * @tparam Str the type used to store the instance path
-   * @param instance The path for the "rmnk" instance (.dat) file to be used. 
-   *        These files can be generated using the rmnkGenerator.R script 
-   * @param seed The seed used by the pseudo random number generator used in PLS 
-   * @param os The name of the output file where the standard output stream should be redirected 
+   * @param instance The path for the "rmnk" instance (.dat) file to be used.
+   *        These files can be generated using the rmnkGenerator.R script
+   * @param seed The seed used by the pseudo random number generator used in PLS
    */
   template <typename Str = std::string>
-  PLS(Str &&instance, unsigned int seed, std::ostream &os)
+  PLS(Str &&instance, unsigned int seed)
       : eval(std::forward<Str>(instance).c_str())
       , m_generator(seed)
-      , m_os(os)
       , m_hvo(ObjectiveVector(eval.getM(), 0.0)) {}
 
   /**
-  * @brief Construct a new PLS object
-  * 
-  * @tparam Str the type used to store the instance path
-  * @tparam Ref the type used to store the reference point of the hvobj obj 
-  * @param instance The path for the "rmnk" instance (.dat) file to be used. 
-  *        These files can be generated using the rmnkGenerator.R script 
-  * @param seed The seed used by the pseudo random number generator used in PLS 
-  * @param ref The reference point considered by hypervolume indicator whilst running the algorithms (anytime measure)
-  */
-  template <typename Str = std::string, typename Ref = ObjectiveVector>
-  PLS(Str &&instance, unsigned int seed, Ref &&ref)
-      : PLS(std::forward<Str>(instance), seed, std::cout, std::forward<Ref>(ref)) {}
-
-  /**
-  * @brief Construct a new PLS object
-  * 
-  * @tparam Str the type used to store the instance path
-  * @param instance The path for the "rmnk" instance (.dat) file to be used. 
-  *        These files can be generated using the rmnkGenerator.R script 
-  * @param seed The seed used by the pseudo random number generator used in PLS 
-  */
-  template <typename Str = std::string>
-  PLS(Str &&instance, unsigned int seed)
-      : PLS(std::forward<Str>(instance), seed, std::cout) {}
-
-  /**
-  * @brief Construct a new PLS object
-  * 
-  * @tparam Str the type used to store the instance path
-  * @tparam Ref the type used to store the reference point of the hvobj obj 
-  * @param instance The path for the "rmnk" instance (.dat) file to be used. 
-  *        These files can be generated using the rmnkGenerator.R script 
-  * @param ref The reference point considered by hypervolume indicator whilst running the algorithms (anytime measure)
-  */
+   * @brief Construct a new PLS object
+   *
+   * @tparam Str the type used to store the instance path
+   * @tparam Ref the type used to store the reference point of the hvobj obj
+   * @param instance The path for the "rmnk" instance (.dat) file to be used.
+   *        These files can be generated using the rmnkGenerator.R script
+   * @param ref The reference point considered by hypervolume indicator whilst running the
+   * algorithms (anytime measure)
+   */
   template <typename Str = std::string, typename Ref = ObjectiveVector>
   PLS(Str &&instance, Ref &&ref)
-      : PLS(std::forward<Str>(instance), std::random_device()(), std::cout,
-            std::forward<Ref>(ref)) {}
+      : PLS(std::forward<Str>(instance), std::random_device()(), std::forward<Ref>(ref)) {}
 
   /**
-  * @brief Construct a new PLS object
-  * 
-  * @tparam Str the type used to store the instance path
-  * @param instance The path for the "rmnk" instance (.dat) file to be used. 
-  *        These files can be generated using the rmnkGenerator.R script 
-  */
+   * @brief Construct a new PLS object
+   *
+   * @tparam Str the type used to store the instance path
+   * @param instance The path for the "rmnk" instance (.dat) file to be used.
+   *        These files can be generated using the rmnkGenerator.R script
+   */
   template <typename Str = std::string>
   PLS(Str &&instance)
-      : PLS(std::forward<Str>(instance), std::random_device()(), std::cout) {}
+      : PLS(std::forward<Str>(instance), std::random_device()()) {}
 
   /**
    * @brief Getter for the vector of solutions found by this algorithm.
-   * 
-   * @return std::vector<Solution> const& Read-Only reference to a vector of 
+   *
+   * @return std::vector<Solution> const& Read-Only reference to a vector of
    *         visited solutions produced by PLS.
    */
   std::vector<Solution> const solutions() const {
@@ -149,8 +122,8 @@ class PLS {
   /**
    * @brief Getter for the vector of solutions found by this algorithm
    *        that were not visited in the process of local search.
-   * 
-   * @return std::vector<Solution> const& Read-Only reference to a vector of 
+   *
+   * @return std::vector<Solution> const& Read-Only reference to a vector of
    *         non visited solutions produced by PLS.
    */
   std::vector<Solution> const non_visited_solutions() const {
@@ -158,9 +131,20 @@ class PLS {
   }
 
   /**
+   * @brief Getter for the anytime data produced by this algorithm.
+   *
+   * @return std::vecto<std::tuple<std::size_t, hv_t>> const&
+   *         Read-Only reference to a vector of pairs <evaluation,
+   *         hypervolume> obtained in the run of the PLS algorithm.
+   */
+  auto const &anytime() const {
+    return m_anytime;
+  }
+
+  /**
    * @brief PLS implementation runner. This effectively starts the algorithm and runs it
    * until the maximum number of evaluations has been reached.
-   * 
+   *
    * @param maxeval The maximum number of evaluations performed by PLS (stopping criterion)
    * @param acceptance_criterion The PLS algorithm solution acceptance criterion
    * @param neighborhood_exploration The PLS algorithm solution exploration criterion
@@ -174,8 +158,7 @@ class PLS {
     m_solutions = m_non_visited_solutions;
 
     std::size_t eval = 0;
-    m_os << "evaluation,hypervolume\n";
-    m_os << std::setprecision(12) << eval << "," << m_hvo.value() << "\n";
+    m_anytime.push_back({eval, m_hvo.value()});
 
 #define RUNLOOP(FIRSTIMPROV)                                                      \
   switch (acceptance_criterion) {                                                 \
@@ -205,18 +188,17 @@ class PLS {
   }
 
  private:
-
- /**
-  * @brief Helper function that provides the implementation of 
-  *        multiple acceptance/exploration criterion exploration methods.
-  * 
-  * @tparam FirstImprov Boolean template parameter indicating if the first 
-  *         improvement technique should be used
-  * @tparam Acceptance Neighborhood exporation criterion type indication the 
-  *         exploration method to be used.
-  * @param evaluation The current evaluation number.
-  * @param maxeval The maximum number of evaluations.
-  */
+  /**
+   * @brief Helper function that provides the implementation of
+   *        multiple acceptance/exploration criterion exploration methods.
+   *
+   * @tparam FirstImprov Boolean template parameter indicating if the first
+   *         improvement technique should be used
+   * @tparam Acceptance Neighborhood exporation criterion type indication the
+   *         exploration method to be used.
+   * @param evaluation The current evaluation number.
+   * @param maxeval The maximum number of evaluations.
+   */
   template <bool FirstImprov, PLSAcceptanceCriterion Acceptance>
   void m_loop(size_t &evaluation, size_t maxeval) {
     while (evaluation < maxeval && !m_non_visited_solutions.empty()) {
@@ -236,7 +218,7 @@ class PLS {
           if (add_non_dominated(m_solutions, solution)) {
             m_hvo.insert(solution.objective_vector());
             add_non_dominated(m_non_visited_solutions, std::move(solution));
-            m_os << std::setprecision(12) << evaluation << "," << m_hvo.value() << "\n";
+            m_anytime.push_back({evaluation, m_hvo.value()});
             if constexpr (FirstImprov) {
               break;
             }
@@ -252,7 +234,7 @@ class PLS {
               add_non_dominated(m_solutions, solution)) {
             m_hvo.insert(solution.objective_vector());
             add_non_dominated(m_non_visited_solutions, std::move(solution));
-            m_os << std::setprecision(12) << evaluation << "," << m_hvo.value() << "\n";
+            m_anytime.push_back({evaluation, m_hvo.value()});
             if constexpr (FirstImprov) {
               break;
             }
@@ -272,7 +254,7 @@ class PLS {
             use_remaining = false;
             m_hvo.insert(solution.objective_vector());
             add_non_dominated(m_non_visited_solutions, std::move(solution));
-            m_os << std::setprecision(12) << evaluation << "," << m_hvo.value() << "\n";
+            m_anytime.push_back({evaluation, m_hvo.value()});
             if constexpr (FirstImprov) {
               break;
             }
@@ -285,7 +267,7 @@ class PLS {
             if (add_non_dominated(m_solutions, solution)) {
               m_hvo.insert(solution.objective_vector());
               add_non_dominated(m_non_visited_solutions, std::move(solution));
-              m_os << std::setprecision(12) << iteration << "," << m_hvo.value() << "\n";
+              m_anytime.push_back({evaluation, m_hvo.value()});
               if constexpr (FirstImprov) {
                 break;
               }

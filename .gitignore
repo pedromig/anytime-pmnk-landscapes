@@ -1,0 +1,9 @@
+.vscode
+instances/*.dat
+instances/default_instances
+bin
+out
+build
+docs/documentation/*
+compile_commands.json
+.cache

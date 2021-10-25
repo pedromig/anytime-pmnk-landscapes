@@ -28,7 +28,7 @@ using namespace pmnk;
 
 /**
  * @brief Enum representing which indicator to use as the IBEA algorithm indicator operator.
- *        Possible values are: 
+ *        Possible values are:
  *          - EPS (Additive Epsilon Indicator)
  *          - IHD (Hypervolume Based Indicator)
  */
@@ -36,7 +36,7 @@ enum class Indicator { EPS, IHD };
 
 /**
  * @brief Enum representing which indicator to use as the IBEA algorithm crossover operator.
- *        Possible values are: 
+ *        Possible values are:
  *          - NPC (N-Point Crossover)
  *          - UC (Uniform Crossover)
  */
@@ -44,14 +44,14 @@ enum class Crossover { NPC, UC };
 
 /**
  * @brief Enum representing which indicator to use as the IBEA algorithm selection operator.
- *        Possible values are: 
+ *        Possible values are:
  *          - KWT (K-Way Tournament Selection)
  */
 enum class Selection { KWT };
 
 /**
  * @brief Enum representing which indicator to use as the IBEA algorithm selection operator.
- *        Possible values are: 
+ *        Possible values are:
  *          - UM (Uniform Mutation)
  */
 enum class Mutation { UM };
@@ -234,6 +234,63 @@ inline void set_ibea_selection_options(CLI::App &app, std::size_t &matting_pool_
       ->check(CLI::NonNegativeNumber);
 }
 
+// Write CSV ouput file (Utils)
+
+/**
+ * @brief Unpack tuple containing the elements of a row and dump
+ *        them into the output stream in csv format. (Worker function)
+ * 
+ * @tparam I the index of the current element being printed 
+ * @tparam Ts The types of the elements contained in the tuple
+ * @param os The output stream where the data (in csv format) 
+ *           should be redirected to
+ * @param row  The current row of data 
+ */
+template <std::size_t I, typename... Ts>
+auto csv_row(std::ostream &os, std::tuple<Ts...> const &row) {
+  if constexpr (I == sizeof...(Ts)) {
+    os << "\n";
+  } else {
+    os << std::setprecision(12) << std::get<I>(row);
+    if constexpr (I + 1 != sizeof...(Ts)) {
+      os << ",";
+    }
+    csv_row<I + 1>(os, row);
+  }
+}
+
+/**
+ * @brief Unpack tuple containing the elements of a row and dump
+ *        them into the output stream in csv format. (Wrapper function)
+ * 
+ * @tparam Ts The types of the elements contained in the tuple
+ * @param os The output stream where the data (in csv format) 
+ *           should be redirected to
+ * @param row  The current row of data 
+ */
+template <typename... Ts>
+auto write_csv_row(std::ostream &os, std::tuple<Ts...> const &row) {
+  csv_row<0>(os, row);
+}
+
+/**
+ * @brief Write anytime data gathered by the search heuristics and
+ *        dump them into a stream in the csv format with delimiter=","
+ * 
+ * @tparam R The type of for the container having the row data
+ * @param os The output stream where the data (in csv format) 
+ *           should be redirected to
+ * @param header The header row of the csv
+ * @param data The payload (rows) with the anytime data
+ */
+template <typename R>
+void to_csv(std::ostream &os, std::string const &header, std::vector<R> const &data) {
+  os << header << '\n';
+  for (auto &row : data) {
+    write_csv_row(os, row);
+  }
+}
+
 // Algorithm Callbacks
 
 /**
@@ -250,13 +307,16 @@ inline void set_ibea_selection_options(CLI::App &app, std::size_t &matting_pool_
 inline void gsemo(std::string const &instance, std::size_t const maxeval, unsigned int const seed,
                   std::ostream &os, ObjectiveVector &ref) {
   if (ref.empty()) {
-    GSEMO gsemo(instance, seed, os);
+    GSEMO gsemo(instance, seed);
     gsemo.run(maxeval);
+    to_csv(os, "evaluation,hypervolume", gsemo.anytime());
   } else {
-    GSEMO gsemo(instance, seed, os, ref);
+    GSEMO gsemo(instance, seed, ref);
     gsemo.run(maxeval);
+    to_csv(os, "evaluation,hypervolume", gsemo.anytime());
   }
 }
+
 /**
  * @brief CLI::App callback for the pls algorithm
  *
@@ -274,13 +334,16 @@ inline void pls(std::string const &instance, std::size_t maxeval, unsigned int s
                 PLSAcceptanceCriterion const pac, PLSExplorationCriterion const pne,
                 std::ostream &os, ObjectiveVector &ref) {
   if (ref.empty()) {
-    PLS pls(instance, seed, os);
+    PLS pls(instance, seed);
     pls.run(maxeval, pac, pne);
+    to_csv(os, "evaluation,hypervolume", pls.anytime());
   } else {
-    PLS pls(instance, seed, os, ref);
+    PLS pls(instance, seed, ref);
     pls.run(maxeval, pac, pne);
+    to_csv(os, "evaluation,hypervolume", pls.anytime());
   }
 }
+
 /**
  * @brief CLI::App callback for the ibea algorithm
  *
@@ -315,20 +378,22 @@ inline void ibea(std::string const &instance, std::size_t const maxeval, unsigne
   std::mt19937 rng(dev());
 
 /**
- * @brief Helper define to avoid the use of runtime polymorphism methods to distinguish 
+ * @brief Helper define to avoid the use of runtime polymorphism methods to distinguish
  * between selection operators that ibea is going to use during its execution
  */
 #define SELECTION(MAXEVAL, POP, GEN, FACTOR, I, C, M, S, ADAPT)                             \
   switch (S) {                                                                              \
     case Selection::KWT:                                                                    \
       if (ref.empty()) {                                                                    \
-        IBEA ibea(instance, seed, os);                                                      \
+        IBEA ibea(instance, seed);                                                          \
         ibea.run(MAXEVAL, POP, GEN, FACTOR, I, C, M, KWayTournamentSelection(ts, mps, rng), \
                  ADAPT);                                                                    \
+        to_csv(os, "evaluation,generation,hypervolume", ibea.anytime());                    \
       } else {                                                                              \
-        IBEA ibea(instance, seed, os, ref);                                                 \
+        IBEA ibea(instance, seed, ref);                                                     \
         ibea.run(MAXEVAL, POP, GEN, FACTOR, I, C, M, KWayTournamentSelection(ts, mps, rng), \
                  ADAPT);                                                                    \
+        to_csv(os, "evaluation,generation,hypervolume", ibea.anytime());                    \
       }                                                                                     \
       break;                                                                                \
     default:                                                                                \
@@ -336,9 +401,9 @@ inline void ibea(std::string const &instance, std::size_t const maxeval, unsigne
   }
 
 /**
- * @brief Helper define to avoid the use of runtime polymorphism methods to distinguish 
+ * @brief Helper define to avoid the use of runtime polymorphism methods to distinguish
  * between crossover operators that ibea is going to use during its execution
- * 
+ *
  */
 #define MUTATION(MAXEVAL, POP, GEN, FACTOR, I, C, M, S, ADAPT)                       \
   switch (M) {                                                                       \
@@ -350,9 +415,9 @@ inline void ibea(std::string const &instance, std::size_t const maxeval, unsigne
   }
 
 /**
- * @brief Helper define to avoid the use of runtime polymorphism methods to distinguish 
+ * @brief Helper define to avoid the use of runtime polymorphism methods to distinguish
  * between crossover operators that ibea is going to use during its execution.
- * 
+ *
  */
 #define CROSSOVER(MAXEVAL, POP, GEN, FACTOR, I, C, M, S, ADAPT)                           \
   switch (C) {                                                                            \
@@ -366,10 +431,10 @@ inline void ibea(std::string const &instance, std::size_t const maxeval, unsigne
       throw("Unknown crossover operator!\n");                                             \
   }
 
-/**\ 
- * @brief Helper define to avoid the use of runtime polymorphism methods to distinguish 
+/**\
+ * @brief Helper define to avoid the use of runtime polymorphism methods to distinguish
  * between indicator operators that ibea is going to use during its execution.
- * 
+ *
  */
 #define INDICATOR(MAXEVAL, POP, GEN, FACTOR, I, C, M, S, ADAPT)                                \
   switch (I) {                                                                                 \
