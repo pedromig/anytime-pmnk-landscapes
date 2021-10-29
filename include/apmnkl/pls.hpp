@@ -16,62 +16,73 @@
 #include <csignal>
 #include <iomanip>
 
-#include "../Utils/solution.hpp"
-#include "../Utils/utils.hpp"
-#include "../Utils/wfg.hpp"
+#include "utils/solution.hpp"
+#include "utils/utils.hpp"
+#include "utils/wfg.hpp"
 
-namespace pmnk {
+namespace apmnkl {
 
-// Acceptance criterion:
-//   - 0 -> accept every non-dominated neighbor (NON_DOMINATING)
-//   - 1 -> accept only neighbors that dominate current solution (DOMINATING)
-//   - 2 -> first try to accept only neighbors that dominate the (BOTH)
-//          current solution, if none exist accept non-dominated
-
-enum class PLSAcceptanceCriterion { NON_DOMINATING, DOMINATING, BOTH };
-
-// Neighborhood exploration:
-//   - 0 -> explore every acceptable neighbor (BEST_IMPROVEMENT)
-//   - 1 -> stop once one neighbor is accepted (FIRST_IMPROVEMENT)
-//   - 2 -> use 1 until PLS stops, afterwards restart and use 0 (BEST_IMPROVEMENT)
-enum class PLSExplorationCriterion { BEST_IMPROVEMENT, FIRST_IMPROVEMENT, BOTH };
-
-/// Wrapper class for PLS
-class PLS {
-  using hv_t = typename ObjectiveVector::value_type;
+/// Wrapper class for the PLS algorithm
+class pls {
+  using objv_type = typename apmnkl::objective_vector;
+  using decv_type = typename apmnkl::decision_vector;
+  using hv_type = typename objv_type::value_type;
+  using solution_type = typename priv::solution;
 
  public:
-  RMNKEval eval;
+  priv::RMNKEval eval;
 
  private:
   std::mt19937 m_generator;
 
-  hvobj<hv_t> m_hvo;
-  std::vector<std::tuple<std::size_t, hv_t>> m_anytime;
+  priv::hvobj<hv_type> m_hvo;
+  std::vector<std::tuple<std::size_t, hv_type>> m_anytime;
 
-  std::vector<Solution> m_solutions;
-  std::vector<Solution> m_non_visited_solutions;
+  std::vector<solution_type> m_solutions;
+  std::vector<solution_type> m_non_visited_solutions;
 
  public:
+  /** Acceptance criterion:
+   *  - 0 -> accept every non-dominated neighbor (non_dominating).
+   *  - 1 -> accept only neighbors that dominate current solution (dominating).
+   *  - 2 -> first try to accept only neighbors that dominate the (both)
+   *         current solution, if none exist accept non-dominated.
+   */
+  enum class pls_acceptance_criterion { non_dominating, dominating, both };
+
+  /// Helper `using` to avoid typing too much
+  using pac = pls_acceptance_criterion;
+
+  /** Neighborhood exploration:
+   *  - 0 -> explore every acceptable neighbor (best_improvement).
+   *  - 1 -> stop once one neighbor is accepted (first_improvement).
+   *  - 2 -> use 1 until PLS stops, afterwards restart and use 0 (best_improvement).
+   */
+  enum class pls_neighborhood_exploration { best_improvement, first_improvement, both };
+
+  /// Helper `using` to avoid typing too much
+  using pne = pls_neighborhood_exploration;
+
   /**
-   * @brief Construct a new PLS object
+   * @brief Construct a new pls object.
    *
-   * @tparam Str the type used to store the instance path
+   * @tparam Str the type used to store the instance path.
    * @tparam Ref the type used to store the reference point of the hvobj obj
    * @param instance The path for the "rmnk" instance (.dat) file to be used.
-   *        These files can be generated using the rmnkGenerator.R script
+   *        These files can be generated using the rmnkGenerator.R script.
    * @param seed The seed used by the pseudo random number generator used in PLS
    * @param ref The reference point considered by hypervolume indicator whilst running the
    * algorithms (anytime measure)
    */
-  template <typename Str = std::string, typename Ref = ObjectiveVector>
-  PLS(Str &&instance, unsigned int seed, Ref &&ref)
+
+  template <typename Str = std::string, typename Ref = objv_type>
+  pls(Str &&instance, unsigned int seed, Ref &&ref)
       : eval(std::forward<Str>(instance).c_str())
       , m_generator(seed)
       , m_hvo(std::forward<Ref>(ref)) {}
 
   /**
-   * @brief Construct a new PLS object
+   * @brief Construct a new pls object.
    *
    * @tparam Str the type used to store the instance path
    * @param instance The path for the "rmnk" instance (.dat) file to be used.
@@ -79,43 +90,43 @@ class PLS {
    * @param seed The seed used by the pseudo random number generator used in PLS
    */
   template <typename Str = std::string>
-  PLS(Str &&instance, unsigned int seed)
+  pls(Str &&instance, unsigned int seed)
       : eval(std::forward<Str>(instance).c_str())
       , m_generator(seed)
-      , m_hvo(ObjectiveVector(eval.getM(), 0.0)) {}
+      , m_hvo(objv_type(eval.getM(), 0.0)) {}
 
   /**
-   * @brief Construct a new PLS object
+   * @brief Construct a new pls object
    *
-   * @tparam Str the type used to store the instance path
+   * @tparam Str the type used to store the instance path.
    * @tparam Ref the type used to store the reference point of the hvobj obj
    * @param instance The path for the "rmnk" instance (.dat) file to be used.
-   *        These files can be generated using the rmnkGenerator.R script
+   *        These files can be generated using the rmnkGenerator.R script.
    * @param ref The reference point considered by hypervolume indicator whilst running the
-   * algorithms (anytime measure)
+   * algorithms (anytime measure).
    */
-  template <typename Str = std::string, typename Ref = ObjectiveVector>
-  PLS(Str &&instance, Ref &&ref)
-      : PLS(std::forward<Str>(instance), std::random_device()(), std::forward<Ref>(ref)) {}
+  template <typename Str = std::string, typename Ref = objv_type>
+  pls(Str &&instance, Ref &&ref)
+      : pls(std::forward<Str>(instance), std::random_device()(), std::forward<Ref>(ref)) {}
 
   /**
-   * @brief Construct a new PLS object
+   * @brief Construct a new pls object
    *
-   * @tparam Str the type used to store the instance path
+   * @tparam Str the type used to store the instance path.
    * @param instance The path for the "rmnk" instance (.dat) file to be used.
-   *        These files can be generated using the rmnkGenerator.R script
+   *        These files can be generated using the rmnkGenerator.R script.
    */
   template <typename Str = std::string>
-  PLS(Str &&instance)
-      : PLS(std::forward<Str>(instance), std::random_device()()) {}
+  pls(Str &&instance)
+      : pls(std::forward<Str>(instance), std::random_device()()) {}
 
   /**
    * @brief Getter for the vector of solutions found by this algorithm.
    *
-   * @return std::vector<Solution> const& Read-Only reference to a vector of
-   *         visited solutions produced by PLS.
+   * @return auto const& Read-Only reference to a vector of
+   *         visited solutions produced by the PLS algorithm.
    */
-  std::vector<Solution> const solutions() const {
+  auto const &solutions() const {
     return m_solutions;
   }
 
@@ -123,18 +134,17 @@ class PLS {
    * @brief Getter for the vector of solutions found by this algorithm
    *        that were not visited in the process of local search.
    *
-   * @return std::vector<Solution> const& Read-Only reference to a vector of
-   *         non visited solutions produced by PLS.
+   * @return auto const& Read-Only reference to a vector of
+   *         non visited solutions produced by PLS algorithm.
    */
-  std::vector<Solution> const non_visited_solutions() const {
+  auto const &non_visited_solutions() const {
     return m_non_visited_solutions;
   }
 
   /**
    * @brief Getter for the anytime data produced by this algorithm.
    *
-   * @return std::vecto<std::tuple<std::size_t, hv_t>> const&
-   *         Read-Only reference to a vector of pairs <evaluation,
+   * @return auto const& Read-Only reference to a vector of pairs <evaluation,
    *         hypervolume> obtained in the run of the PLS algorithm.
    */
   auto const &anytime() const {
@@ -149,37 +159,37 @@ class PLS {
    * @param acceptance_criterion The PLS algorithm solution acceptance criterion
    * @param neighborhood_exploration The PLS algorithm solution exploration criterion
    */
-  void run(std::size_t maxeval, PLSAcceptanceCriterion const acceptance_criterion,
-           PLSExplorationCriterion const neighborhood_exploration) {
-    auto rand_solution = Solution::random_solution(eval, m_generator);
+  void run(std::size_t maxeval, pac const acceptance_criterion,
+           pne const neighborhood_exploration) {
+    auto rand_solution = solution_type::random_solution(eval, m_generator);
     m_hvo.insert(rand_solution.objective_vector());
 
     add_non_dominated(m_non_visited_solutions, std::move(rand_solution));
     m_solutions = m_non_visited_solutions;
 
-    std::size_t eval = 0;
-    m_anytime.push_back({eval, m_hvo.value()});
+    std::size_t evaluation = 0;
+    m_anytime.push_back({evaluation, m_hvo.value()});
 
-#define RUNLOOP(FIRSTIMPROV)                                                      \
-  switch (acceptance_criterion) {                                                 \
-    case PLSAcceptanceCriterion::NON_DOMINATING:                                  \
-      m_loop<FIRSTIMPROV, PLSAcceptanceCriterion::NON_DOMINATING>(eval, maxeval); \
-      break;                                                                      \
-    case PLSAcceptanceCriterion::DOMINATING:                                      \
-      m_loop<FIRSTIMPROV, PLSAcceptanceCriterion::DOMINATING>(eval, maxeval);     \
-      break;                                                                      \
-    case PLSAcceptanceCriterion::BOTH:                                            \
-      m_loop<FIRSTIMPROV, PLSAcceptanceCriterion::BOTH>(eval, maxeval);           \
-      break;                                                                      \
-    default:                                                                      \
-      throw("Unknown value for acceptance criterion");                            \
+#define RUNLOOP(FIRSTIMPROV)                                         \
+  switch (acceptance_criterion) {                                    \
+    case pac::non_dominating:                                        \
+      m_loop<FIRSTIMPROV, pac::non_dominating>(evaluation, maxeval); \
+      break;                                                         \
+    case pac::dominating:                                            \
+      m_loop<FIRSTIMPROV, pac::dominating>(evaluation, maxeval);     \
+      break;                                                         \
+    case pac::both:                                                  \
+      m_loop<FIRSTIMPROV, pac::both>(evaluation, maxeval);           \
+      break;                                                         \
+    default:                                                         \
+      throw("Unknown value for acceptance criterion");               \
   }
 
-    if (neighborhood_exploration == PLSExplorationCriterion::BEST_IMPROVEMENT) {
+    if (neighborhood_exploration == pne::best_improvement) {
       RUNLOOP(false);
-    } else if (neighborhood_exploration == PLSExplorationCriterion::FIRST_IMPROVEMENT) {
+    } else if (neighborhood_exploration == pne::first_improvement) {
       RUNLOOP(true);
-    } else if (neighborhood_exploration == PLSExplorationCriterion::BOTH) {
+    } else if (neighborhood_exploration == pne::both) {
       RUNLOOP(true);
       RUNLOOP(false);
     } else {
@@ -199,7 +209,7 @@ class PLS {
    * @param evaluation The current evaluation number.
    * @param maxeval The maximum number of evaluations.
    */
-  template <bool FirstImprov, PLSAcceptanceCriterion Acceptance>
+  template <bool FirstImprov, pac Acceptance>
   void m_loop(size_t &evaluation, size_t maxeval) {
     while (evaluation < maxeval && !m_non_visited_solutions.empty()) {
       std::uniform_int_distribution<std::size_t> distrib(0, m_non_visited_solutions.size() - 1);
@@ -209,11 +219,11 @@ class PLS {
       m_non_visited_solutions[index] = std::move(m_non_visited_solutions.back());
       m_non_visited_solutions.pop_back();
 
-      if constexpr (Acceptance == PLSAcceptanceCriterion::NON_DOMINATING) {
+      if constexpr (Acceptance == pac::non_dominating) {
         for (size_t i = 0; i < original.decision_vector().size() && evaluation < maxeval; ++i) {
-          DecisionVector decision_vector = original.decision_vector();
-          decision_vector[i] = !decision_vector[i];
-          auto solution = Solution(eval, std::move(decision_vector));
+          auto decv = original.decision_vector();
+          decv[i] = !decv[i];
+          auto solution = solution_type(eval, std::move(decv));
           ++evaluation;
           if (add_non_dominated(m_solutions, solution)) {
             m_hvo.insert(solution.objective_vector());
@@ -224,13 +234,13 @@ class PLS {
             }
           }
         }
-      } else if constexpr (Acceptance == PLSAcceptanceCriterion::DOMINATING) {
+      } else if constexpr (Acceptance == pac::dominating) {
         for (size_t i = 0; i < original.decision_vector().size() && evaluation < maxeval; ++i) {
-          DecisionVector decision_vector = original.decision_vector();
-          decision_vector[i] = !decision_vector[i];
-          auto solution = Solution(eval, std::move(decision_vector));
+          auto decv = original.decision_vector();
+          decv[i] = !decv[i];
+          auto solution = solution_type(eval, std::move(decv));
           ++evaluation;
-          if (solution.dominance(original) == DominanceType::DOMINATES &&
+          if (solution.dominance(original) == priv::dominance_type::dominates &&
               add_non_dominated(m_solutions, solution)) {
             m_hvo.insert(solution.objective_vector());
             add_non_dominated(m_non_visited_solutions, std::move(solution));
@@ -240,16 +250,16 @@ class PLS {
             }
           }
         }
-      } else if constexpr (Acceptance == PLSAcceptanceCriterion::BOTH) {
-        std::vector<std::pair<Solution, size_t>> remaining;
+      } else if constexpr (Acceptance == pac::both) {
+        std::vector<std::pair<solution_type, size_t>> remaining;
         remaining.reserve(original.decision_vector().size());
         bool use_remaining = true;
         for (size_t i = 0; i < original.decision_vector().size() && evaluation < maxeval; ++i) {
-          DecisionVector decision_vector = original.decision_vector();
-          decision_vector[i] = !decision_vector[i];
-          auto solution = Solution(eval, std::move(decision_vector));
+          auto decv = original.decision_vector();
+          decv[i] = !decv[i];
+          auto solution = solution_type(eval, std::move(decv));
           ++evaluation;
-          if (solution.dominance(original) == DominanceType::DOMINATES &&
+          if (solution.dominance(original) == priv::dominance_type::dominates &&
               add_non_dominated(m_solutions, solution)) {
             use_remaining = false;
             m_hvo.insert(solution.objective_vector());
@@ -278,5 +288,5 @@ class PLS {
     }
   }
 };
-}  // namespace pmnk
+}  // namespace apmnkl
 #endif  // PLS_HPP

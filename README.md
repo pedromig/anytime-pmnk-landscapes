@@ -1,8 +1,12 @@
 # anytime pmnk-landscapes
 
 ## Dependencies
+CLI11
 
 ## Compilation
+
+cmake -B build-S . -DCMAKE_BUILD_TYPE=Release  
+cmake --build build
 
 ## Usage 
 
@@ -37,6 +41,16 @@ Algorithms:
   IBEA     Run the indicator-based evolutionary algorithm on the instance.
 ```
 
+<details>
+<summary>Examples</summary>
+
+* Common Usage 
+```
+./anytime-pmnk-landscapes
+```
+
+</details>
+
 ### GSEMO
 
 ```
@@ -44,6 +58,11 @@ Run the global simple evolutionary multiobjective optimizer algorithm
 on the instance.
 Usage: anytime-pmnk-landscapes [OPTIONS] instance GSEMO
 ```
+
+<details>
+<summary>Examples</summary>
+  
+</details>
 
 ### PLS
 ```
@@ -130,8 +149,17 @@ KWayTournament
         = size of the tournament used for individual selection
 ```
 
+<details>
+<summary>Examples</summary>
+
+</details>
+
+
+## API
+
+
 For more information about the usage of this api please consult the available
-[documentation](docs/documentation/documentation.pdf);
+[documentation](docs/documentation/documentation.pdf)
 
 ## Acknowledgments
 

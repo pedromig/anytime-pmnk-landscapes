@@ -41,7 +41,9 @@ Authors:
 #include <string>
 #include <vector>
 
-namespace pmnk {
+namespace apmnkl {
+
+namespace priv {
 
 /// rmnk_landscapes instance evaluator
 class RMNKEval {
@@ -58,7 +60,7 @@ class RMNKEval {
   /*
    *  Destructor
    */
-  ~RMNKEval() {
+  virtual ~RMNKEval() {
     if (links != NULL) {
       for (unsigned int n = 0; n < M; n++) {
         for (unsigned int i = 0; i < N; i++)
@@ -285,9 +287,9 @@ class RMNKEval {
     double accu = 0.0;
 
     for (unsigned int i = 0; i < N; i++)
-      accu += tables[_numObj][i][sigma(_numObj, _sol, (int)i)];
+      accu += tables[_numObj][i][sigma(_numObj, _sol, static_cast<int>(i))];
 
-    return accu / (double)N;
+    return accu / static_cast<double>(N);
   }
 
   /***********************************************
@@ -314,5 +316,6 @@ class RMNKEval {
   }
 };
 
+}  // namespace priv
 }  // namespace pmnk
 #endif  // __rMNKEval

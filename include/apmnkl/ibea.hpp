@@ -16,31 +16,32 @@
 #include <iomanip>
 #include <random>
 
-#include "../Utils/solution.hpp"
-#include "../Utils/utils.hpp"
-#include "../Utils/wfg.hpp"
-#include "functor.hpp"
+#include "operators.hpp"
+#include "utils/solution.hpp"
+#include "utils/utils.hpp"
+#include "utils/wfg.hpp"
 
-namespace pmnk {
+namespace apmnkl {
 
 /// Wrapper class for IBEA
-class IBEA {
-  using hv_t = typename ObjectiveVector::value_type;
+class ibea {
+  using objv_type = typename apmnkl::objective_vector;
+  using hv_type = typename objv_type::value_type;
+  using solution_type = typename priv::gasolution;
 
  public:
-  RMNKEval eval;
+  priv::RMNKEval eval;
 
  private:
   std::mt19937 m_generator;
 
-  hvobj<ObjectiveVector::value_type> m_hvo;
-  std::vector<std::tuple<std::size_t, std::size_t, hv_t>> m_anytime;
-
-  std::vector<GASolution> m_solutions;
+  apmnkl::priv::hvobj<hv_type> m_hvo;
+  std::vector<std::tuple<std::size_t, std::size_t, hv_type>> m_anytime;
+  std::vector<solution_type> m_solutions;
 
  public:
   /**
-   * @brief Construct a new IBEA object
+   * @brief Construct a new ibea object
    *
    * @tparam Str the type used to store the instance path
    * @tparam Ref the type used to store the reference point of the hvobj obj
@@ -50,14 +51,14 @@ class IBEA {
    * @param ref The reference point considered by hypervolume indicator whilst running the
    * algorithms (anytime measure)
    */
-  template <typename Str = std::string, typename Ref = ObjectiveVector>
-  IBEA(Str &&instance, unsigned int const seed, Ref &&ref)
+  template <typename Str = std::string, typename Ref = objv_type>
+  ibea(Str &&instance, unsigned int const seed, Ref &&ref)
       : eval(std::forward<Str>(instance).c_str())
       , m_generator(seed)
       , m_hvo(std::forward<Ref>(ref)) {}
 
   /**
-   * @brief Construct a new IBEA object
+   * @brief Construct a new ibea object
    *
    * @tparam Str the type used to store the instance path
    * @param instance The path for the "rmnk" instance (.dat) file to be used.
@@ -65,13 +66,13 @@ class IBEA {
    * @param seed The seed used by the pseudo random number generator used in IBEA
    */
   template <typename Str = std::string>
-  IBEA(Str &&instance, unsigned int const seed)
+  ibea(Str &&instance, unsigned int const seed)
       : eval(std::forward<Str>(instance).c_str())
       , m_generator(seed)
-      , m_hvo(ObjectiveVector(eval.getM(), 0.0)) {}
+      , m_hvo(objv_type(eval.getM(), 0.0)) {}
 
   /**
-   * @brief Construct a new IBEA object
+   * @brief Construct a new ibea object
    *
    * @tparam Str the type used to store the instance path
    * @tparam Ref the type used to store the reference point of the hvobj obj
@@ -81,36 +82,35 @@ class IBEA {
    * @param ref The reference point considered by hypervolume indicator whilst running the
    * algorithms (anytime measure)
    */
-  template <typename Str = std::string, typename Ref = ObjectiveVector>
-  explicit IBEA(Str &&instance, Ref &&ref)
-      : IBEA(std::forward<Str>(instance), std::random_device()(), std::forward<Ref>(ref)) {}
+  template <typename Str = std::string, typename Ref = objv_type>
+  explicit ibea(Str &&instance, Ref &&ref)
+      : ibea(std::forward<Str>(instance), std::random_device()(), std::forward<Ref>(ref)) {}
 
   /**
-   * @brief Construct a new IBEA object
+   * @brief Construct a new ibea object
    *
    * @tparam Str the type used to store the instance path
    * @param instance The path for the "rmnk" instance (.dat) file to be used.
    *        These files can be generated using the rmnkGenerator.R script
    */
   template <typename Str = std::string>
-  explicit IBEA(Str &&instance)
-      : IBEA(std::forward<Str>(instance), std::random_device()()) {}
+  explicit ibea(Str &&instance)
+      : ibea(std::forward<Str>(instance), std::random_device()()) {}
 
   /**
    * @brief Getter for the vector of solutions found by this algorithm.
    *
-   * @return std::vector<Solution> const& Read-Only reference to a vector of solutions
-   *         found by the IBEA.
+   * @return auto const& Read-Only reference to a vector
+   *         of solution found by IBEA.
    */
-  std::vector<GASolution> const &solutions() const {
+  auto const &solutions() const {
     return m_solutions;
   }
 
   /**
    * @brief Getter for the anytime data produced by this algorithm.
    *
-   * @return std::vecto<std::tuple<std::size_t, hv_t>> const&
-   *         Read-Only reference to a vector of pairs <evaluation,
+   * @return auto Read-Only reference to a vector of pairs <evaluation,
    *         hypervolume> obtained in the run of IBEA.
    */
   auto const &anytime() const {
@@ -178,11 +178,11 @@ class IBEA {
     std::size_t evaluation = 0, gen = 0;
     double c = 1;
 
-    std::vector<GASolution> population;
+    std::vector<solution_type> population;
     population.reserve(pop_max);
 
     for (std::size_t i = 0; i < pop_max && evaluation < maxeval; ++i) {
-      auto sol = GASolution(Solution::random_solution(eval, m_generator));
+      auto sol = solution_type(solution_type::random_solution(eval, m_generator));
       if (add_non_dominated(m_solutions, sol)) {
         m_hvo.insert(sol.objective_vector());
         m_anytime.push_back({evaluation, gen, m_hvo.value()});
@@ -236,10 +236,10 @@ class IBEA {
    * @param population The IBEA population to be scaled
    * @return auto A pair containing the upper and lower objective value bounds
    */
-  template <typename S = GASolution>
+  template <typename S = solution_type>
   auto m_objective_bounds(std::vector<S> const &population) {
-    auto ub = std::numeric_limits<ObjectiveVector::value_type>::min();
-    auto lb = std::numeric_limits<ObjectiveVector::value_type>::max();
+    auto ub = std::numeric_limits<typename objv_type::value_type>::min();
+    auto lb = std::numeric_limits<typename objv_type::value_type>::max();
     for (auto const &individual : population) {
       for (auto const v : individual.objective_vector()) {
         lb = std::min(lb, v);
@@ -259,7 +259,7 @@ class IBEA {
    * @param ub the population objective vectors upper bound
    * @return auto The population with the objective vectors scaled
    */
-  template <typename S = GASolution>
+  template <typename S = solution_type>
   auto m_scale_objective_vectors(std::vector<S> const &population, double const lb,
                                  double const ub) {
     std::vector<S> s = population;
@@ -282,11 +282,11 @@ class IBEA {
    * @param indicator The indicator used by IBEA
    * @return auto The adaptive factor.
    */
-  template <typename I, typename S = GASolution>
+  template <typename I, typename S = solution_type>
   auto m_adaptive_factor(std::vector<S> const &population, I &&indicator) {
     auto &&[lb, ub] = m_objective_bounds(population);
     auto s = m_scale_objective_vectors(population, lb, ub);
-    auto c = std::numeric_limits<ObjectiveVector::value_type>::min();
+    auto c = std::numeric_limits<typename objv_type::value_type>::min();
     for (std::size_t i = 0; i < s.size(); ++i) {
       for (std::size_t j = 0; j < s.size(); ++j) {
         if (i != j) {
@@ -306,7 +306,7 @@ class IBEA {
    * @param k IBEA scaling factor.
    * @param indicator The indicator used by IBEA.
    */
-  template <typename I, typename S = GASolution>
+  template <typename I, typename S = solution_type>
   void m_fitness_assignment(std::vector<S> &population, double const k, I &&indicator) const {
     for (std::size_t i = 0; i < population.size(); ++i) {
       population[i].set_fitness(0);
@@ -331,7 +331,7 @@ class IBEA {
    * @param population_max_size The max population size.
    * @param indicator The indicator used by IBEA.
    */
-  template <typename I, typename S = GASolution>
+  template <typename I, typename S = solution_type>
   void m_environmental_selection(std::vector<S> &population, double const k,
                                  std::size_t population_max_size, I &&indicator) {
     while (population.size() > population_max_size) {
@@ -349,5 +349,5 @@ class IBEA {
     }
   }
 };
-}  // namespace pmnk
+}  // namespace apmnkl
 #endif  // IBEA_HPP

@@ -1,10 +1,12 @@
 /**
- * @file main.cpp
+ * @file app.cpp
  * @author Pedro Rodrigues (pedror@student.dei.uc.pt)
  * @author Alexandre Jesus (ajesus@dei.uc.pt)
- * @brief Driver program to test the implementation of some search algorithms
- *        and simplify the gathering of anytime data relevant to the study
- *        of their performance in the context of the pmnk-landscapes problem
+ * @brief Simple app to test the apmnkl library implementation of some search
+ *        heuristics. This app serves as an example program showing the usage
+ *        of the library, while also simplifing the gathering of anytime data
+ *        relevant to the study of the performance of the implemented algorithms
+ *        in the context of the pmnk-landscapes problem.
  * @version 0.1.0
  * @date 13-09-2021
  *
@@ -12,56 +14,62 @@
  *
  */
 
+// CLI11 Command Line Parser
 #include <CLI/CLI.hpp>
+
+// anytime pmnk-landscapes (apmnkl) library includes
+#include <apmnkl/gsemo.hpp>
+#include <apmnkl/ibea.hpp>
+#include <apmnkl/operators.hpp>
+#include <apmnkl/pls.hpp>
+
+// Standard Includes
 #include <fstream>
 #include <iostream>
 #include <random>
 #include <tuple>
-
-#include "GSEMO/gsemo.hpp"
-#include "IBEA/ibea.hpp"
-#include "PLS/pls.hpp"
-
-using namespace pmnk;
 
 // Helper IBEA Subcommand CLI Enums
 
 /**
  * @brief Enum representing which indicator to use as the IBEA algorithm indicator operator.
  *        Possible values are:
- *          - EPS (Additive Epsilon Indicator)
- *          - IHD (Hypervolume Based Indicator)
+ *          - eps (Additive Epsilon Indicator)
+ *          - ihd (Hypervolume Based Indicator)
  */
-enum class Indicator { EPS, IHD };
+enum class indicator { eps, ihd };
 
 /**
- * @brief Enum representing which indicator to use as the IBEA algorithm crossover operator.
+ * @brief Enum representing which crossover method to use as the IBEA algorithm
+ *        crossover operator.
  *        Possible values are:
- *          - NPC (N-Point Crossover)
- *          - UC (Uniform Crossover)
+ *          - npc (N-Point Crossover)
+ *          - uc (Uniform Crossover)
  */
-enum class Crossover { NPC, UC };
+enum class crossover { npc, uc };
 
 /**
- * @brief Enum representing which indicator to use as the IBEA algorithm selection operator.
+ * @brief Enum representing which mutation operator to use as the IBEA algorithm
+ *        mutation operator.
  *        Possible values are:
- *          - KWT (K-Way Tournament Selection)
+ *          - um (Uniform Mutation)
  */
-enum class Selection { KWT };
+enum class mutation { um };
 
 /**
- * @brief Enum representing which indicator to use as the IBEA algorithm selection operator.
+ * @brief Enum representing which selection method to use as the IBEA algorithm
+ *        selection operator.
  *        Possible values are:
- *          - UM (Uniform Mutation)
+ *          - kwt (K-Way Tournament Selection)
  */
-enum class Mutation { UM };
+enum class selection { kwt };
 
 // CLI Options
 
 /**
  * @brief Set the CLI positional arguments options/flags
  *
- * @param app CLI::App object that will hold all the options/flags of the positional arguments
+ * @param app CLI::App object that will hold all the options/flags of the positional arguments *
  * (below).
  * @param instance The path for the "rmnk" instance (.dat) file to be used.
  *        These files can be generated using the rmnkGenerator.R script
@@ -87,7 +95,7 @@ inline void set_positional_arguments(CLI::App &app, std::string &instance) {
  * (anytime measure)
  */
 inline void set_general_options(CLI::App &app, std::size_t &maxeval, unsigned int &seed,
-                                std::string &output, ObjectiveVector &ref) {
+                                std::string &output, apmnkl::objective_vector &ref) {
   app.add_option("-m,--maxeval", maxeval,
                  "= maximum number of evaluations to be performed (stopping criterion).")
       ->needs(app.get_option("instance"))
@@ -120,12 +128,11 @@ inline void set_general_options(CLI::App &app, std::size_t &maxeval, unsigned in
  * @param pac The PLS algorithm solution acceptance criterion
  * @param pne The PLS algorithm neighboorhood solutions exploration criterion
  */
-inline void set_pls_options(CLI::App &app, PLSAcceptanceCriterion &pac,
-                            PLSExplorationCriterion &pne) {
-  std::map<std::string, PLSAcceptanceCriterion> acceptance_opts{
-      {"NON_DOMINATING", PLSAcceptanceCriterion::NON_DOMINATING},
-      {"DOMINATING", PLSAcceptanceCriterion::DOMINATING},
-      {"BOTH", PLSAcceptanceCriterion::BOTH}};
+inline void set_pls_options(CLI::App &app, apmnkl::pls::pac &pac, apmnkl::pls::pne &pne) {
+  std::map<std::string, apmnkl::pls::pac> acceptance_opts{
+      {"NON_DOMINATING", apmnkl::pls::pac::non_dominating},
+      {"DOMINATING", apmnkl::pls::pac::dominating},
+      {"BOTH", apmnkl::pls::pac::both}};
 
   app.add_option(
          "-a,--pls-acceptance-criterion", pac,
@@ -135,10 +142,10 @@ inline void set_pls_options(CLI::App &app, PLSAcceptanceCriterion &pac,
          "dominate\n      the current solution, if none exist accept non-dominated solutions.")
       ->transform(CLI::CheckedTransformer(acceptance_opts, CLI::ignore_case));
 
-  std::map<std::string, PLSExplorationCriterion> exploration_opts{
-      {"BEST_IMPROVEMENT", PLSExplorationCriterion::BEST_IMPROVEMENT},
-      {"FIRST_IMPROVEMENT", PLSExplorationCriterion::FIRST_IMPROVEMENT},
-      {"BOTH", PLSExplorationCriterion::BOTH}};
+  std::map<std::string, apmnkl::pls::pne> exploration_opts{
+      {"BEST_IMPROVEMENT", apmnkl::pls::pne::best_improvement},
+      {"FIRST_IMPROVEMENT", apmnkl::pls::pne::first_improvement},
+      {"BOTH", apmnkl::pls::pne::both}};
 
   app.add_option(
          "-e,--pls-neighborhood-exploration", pne,
@@ -239,12 +246,12 @@ inline void set_ibea_selection_options(CLI::App &app, std::size_t &matting_pool_
 /**
  * @brief Unpack tuple containing the elements of a row and dump
  *        them into the output stream in csv format. (Worker function)
- * 
- * @tparam I the index of the current element being printed 
+ *
+ * @tparam I the index of the current element being printed
  * @tparam Ts The types of the elements contained in the tuple
- * @param os The output stream where the data (in csv format) 
+ * @param os The output stream where the data (in csv format)
  *           should be redirected to
- * @param row  The current row of data 
+ * @param row  The current row of data
  */
 template <std::size_t I, typename... Ts>
 auto csv_row(std::ostream &os, std::tuple<Ts...> const &row) {
@@ -262,11 +269,11 @@ auto csv_row(std::ostream &os, std::tuple<Ts...> const &row) {
 /**
  * @brief Unpack tuple containing the elements of a row and dump
  *        them into the output stream in csv format. (Wrapper function)
- * 
+ *
  * @tparam Ts The types of the elements contained in the tuple
- * @param os The output stream where the data (in csv format) 
+ * @param os The output stream where the data (in csv format)
  *           should be redirected to
- * @param row  The current row of data 
+ * @param row  The current row of data
  */
 template <typename... Ts>
 auto write_csv_row(std::ostream &os, std::tuple<Ts...> const &row) {
@@ -276,9 +283,9 @@ auto write_csv_row(std::ostream &os, std::tuple<Ts...> const &row) {
 /**
  * @brief Write anytime data gathered by the search heuristics and
  *        dump them into a stream in the csv format with delimiter=","
- * 
+ *
  * @tparam R The type of for the container having the row data
- * @param os The output stream where the data (in csv format) 
+ * @param os The output stream where the data (in csv format)
  *           should be redirected to
  * @param header The header row of the csv
  * @param data The payload (rows) with the anytime data
@@ -305,13 +312,13 @@ void to_csv(std::ostream &os, std::string const &header, std::vector<R> const &d
  * (anytime measure)
  */
 inline void gsemo(std::string const &instance, std::size_t const maxeval, unsigned int const seed,
-                  std::ostream &os, ObjectiveVector &ref) {
+                  std::ostream &os, apmnkl::objective_vector &ref) {
   if (ref.empty()) {
-    GSEMO gsemo(instance, seed);
+    apmnkl::gsemo gsemo(instance, seed);
     gsemo.run(maxeval);
     to_csv(os, "evaluation,hypervolume", gsemo.anytime());
   } else {
-    GSEMO gsemo(instance, seed, ref);
+    apmnkl::gsemo gsemo(instance, seed, ref);
     gsemo.run(maxeval);
     to_csv(os, "evaluation,hypervolume", gsemo.anytime());
   }
@@ -331,14 +338,14 @@ inline void gsemo(std::string const &instance, std::size_t const maxeval, unsign
  * (anytime measure)
  */
 inline void pls(std::string const &instance, std::size_t maxeval, unsigned int seed,
-                PLSAcceptanceCriterion const pac, PLSExplorationCriterion const pne,
-                std::ostream &os, ObjectiveVector &ref) {
+                apmnkl::pls::pac const pac, apmnkl::pls::pne const pne, std::ostream &os,
+                apmnkl::objective_vector &ref) {
   if (ref.empty()) {
-    PLS pls(instance, seed);
+    apmnkl::pls pls(instance, seed);
     pls.run(maxeval, pac, pne);
     to_csv(os, "evaluation,hypervolume", pls.anytime());
   } else {
-    PLS pls(instance, seed, ref);
+    apmnkl::pls pls(instance, seed, ref);
     pls.run(maxeval, pac, pne);
     to_csv(os, "evaluation,hypervolume", pls.anytime());
   }
@@ -372,32 +379,31 @@ inline void pls(std::string const &instance, std::size_t maxeval, unsigned int s
 inline void ibea(std::string const &instance, std::size_t const maxeval, unsigned int const seed,
                  std::size_t const ps, std::size_t const gen, double const k, double const mp,
                  double const cp, std::size_t npts, std::size_t const mps, std::size_t const ts,
-                 Indicator const indicator, Crossover const crossover, Mutation const mutation,
-                 Selection const selection, bool adaptive, std::ostream &os, ObjectiveVector &ref) {
-  auto dev = std::random_device();
+                 indicator const indicator, crossover const crossover, mutation const mutation,
+                 selection const selection, bool adaptive, std::ostream &os,
+                 apmnkl::objective_vector &ref) {
+  std::random_device dev;
   std::mt19937 rng(dev());
 
 /**
  * @brief Helper define to avoid the use of runtime polymorphism methods to distinguish
  * between selection operators that ibea is going to use during its execution
  */
-#define SELECTION(MAXEVAL, POP, GEN, FACTOR, I, C, M, S, ADAPT)                             \
-  switch (S) {                                                                              \
-    case Selection::KWT:                                                                    \
-      if (ref.empty()) {                                                                    \
-        IBEA ibea(instance, seed);                                                          \
-        ibea.run(MAXEVAL, POP, GEN, FACTOR, I, C, M, KWayTournamentSelection(ts, mps, rng), \
-                 ADAPT);                                                                    \
-        to_csv(os, "evaluation,generation,hypervolume", ibea.anytime());                    \
-      } else {                                                                              \
-        IBEA ibea(instance, seed, ref);                                                     \
-        ibea.run(MAXEVAL, POP, GEN, FACTOR, I, C, M, KWayTournamentSelection(ts, mps, rng), \
-                 ADAPT);                                                                    \
-        to_csv(os, "evaluation,generation,hypervolume", ibea.anytime());                    \
-      }                                                                                     \
-      break;                                                                                \
-    default:                                                                                \
-      throw("Unknown selection method!");                                                   \
+#define SELECTION(MAXEVAL, POP, GEN, FACTOR, I, C, M, S, ADAPT)                                    \
+  switch (S) {                                                                                     \
+    case selection::kwt:                                                                           \
+      if (ref.empty()) {                                                                           \
+        apmnkl::ibea ibea(instance, seed);                                                         \
+        ibea.run(MAXEVAL, POP, GEN, FACTOR, I, C, M, apmnkl::selection::kwt(ts, mps, rng), ADAPT); \
+        to_csv(os, "evaluation,generation,hypervolume", ibea.anytime());                           \
+      } else {                                                                                     \
+        apmnkl::ibea ibea(instance, seed, ref);                                                    \
+        ibea.run(MAXEVAL, POP, GEN, FACTOR, I, C, M, apmnkl::selection::kwt(ts, mps, rng), ADAPT); \
+        to_csv(os, "evaluation,generation,hypervolume", ibea.anytime());                           \
+      }                                                                                            \
+      break;                                                                                       \
+    default:                                                                                       \
+      throw("Unknown selection method!");                                                          \
   }
 
 /**
@@ -405,13 +411,13 @@ inline void ibea(std::string const &instance, std::size_t const maxeval, unsigne
  * between crossover operators that ibea is going to use during its execution
  *
  */
-#define MUTATION(MAXEVAL, POP, GEN, FACTOR, I, C, M, S, ADAPT)                       \
-  switch (M) {                                                                       \
-    case Mutation::UM:                                                               \
-      SELECTION(MAXEVAL, POP, GEN, FACTOR, I, C, UniformMutation(mp, rng), S, ADAPT) \
-      break;                                                                         \
-    default:                                                                         \
-      throw("Unknown mutation operator!\n");                                         \
+#define MUTATION(MAXEVAL, POP, GEN, FACTOR, I, C, M, S, ADAPT)                            \
+  switch (M) {                                                                            \
+    case mutation::um:                                                                    \
+      SELECTION(MAXEVAL, POP, GEN, FACTOR, I, C, apmnkl::mutation::um(mp, rng), S, ADAPT) \
+      break;                                                                              \
+    default:                                                                              \
+      throw("Unknown mutation operator!\n");                                              \
   }
 
 /**
@@ -419,16 +425,16 @@ inline void ibea(std::string const &instance, std::size_t const maxeval, unsigne
  * between crossover operators that ibea is going to use during its execution.
  *
  */
-#define CROSSOVER(MAXEVAL, POP, GEN, FACTOR, I, C, M, S, ADAPT)                           \
-  switch (C) {                                                                            \
-    case Crossover::NPC:                                                                  \
-      MUTATION(MAXEVAL, POP, GEN, FACTOR, I, NPointCrossover(npts, cp, rng), M, S, ADAPT) \
-      break;                                                                              \
-    case Crossover::UC:                                                                   \
-      MUTATION(MAXEVAL, POP, GEN, FACTOR, I, UniformCrossover(cp, rng), M, S, ADAPT)      \
-      break;                                                                              \
-    default:                                                                              \
-      throw("Unknown crossover operator!\n");                                             \
+#define CROSSOVER(MAXEVAL, POP, GEN, FACTOR, I, C, M, S, ADAPT)                                  \
+  switch (C) {                                                                                   \
+    case crossover::npc:                                                                         \
+      MUTATION(MAXEVAL, POP, GEN, FACTOR, I, apmnkl::crossover::npc(npts, cp, rng), M, S, ADAPT) \
+      break;                                                                                     \
+    case crossover::uc:                                                                          \
+      MUTATION(MAXEVAL, POP, GEN, FACTOR, I, apmnkl::crossover::uc(cp, rng), M, S, ADAPT)        \
+      break;                                                                                     \
+    default:                                                                                     \
+      throw("Unknown crossover operator!\n");                                                    \
   }
 
 /**\
@@ -436,17 +442,18 @@ inline void ibea(std::string const &instance, std::size_t const maxeval, unsigne
  * between indicator operators that ibea is going to use during its execution.
  *
  */
-#define INDICATOR(MAXEVAL, POP, GEN, FACTOR, I, C, M, S, ADAPT)                                \
-  switch (I) {                                                                                 \
-    case Indicator::EPS:                                                                       \
-      CROSSOVER(MAXEVAL, POP, GEN, FACTOR, EPS(), C, M, S, ADAPT)                              \
-      break;                                                                                   \
-    case Indicator::IHD:                                                                       \
-      CROSSOVER(MAXEVAL, POP, GEN, FACTOR, IHD(ObjectiveVector(ibea.eval.getM(), 0)), C, M, S, \
-                ADAPT)                                                                         \
-      break;                                                                                   \
-    default:                                                                                   \
-      throw("Unknown indicator!\n");                                                           \
+#define INDICATOR(MAXEVAL, POP, GEN, FACTOR, I, C, M, S, ADAPT)                                 \
+  switch (I) {                                                                                  \
+    case indicator::eps:                                                                        \
+      CROSSOVER(MAXEVAL, POP, GEN, FACTOR, apmnkl::indicator::eps(), C, M, S, ADAPT)            \
+      break;                                                                                    \
+    case indicator::ihd:                                                                        \
+      CROSSOVER(MAXEVAL, POP, GEN, FACTOR,                                                      \
+                apmnkl::indicator::ihd(apmnkl::objective_vector(ibea.eval.getM(), 0)), C, M, S, \
+                ADAPT)                                                                          \
+      break;                                                                                    \
+    default:                                                                                    \
+      throw("Unknown indicator!\n");                                                            \
   }
 
 /// Helper define that forwards all the information to the others
@@ -457,7 +464,7 @@ inline void ibea(std::string const &instance, std::size_t const maxeval, unsigne
 int main(int argc, char **argv) {
   // App Global Settings
   CLI::App app(
-      "Driver program to test the implementation of some search heuristics and "
+      "Driver app to test the implementation of some search heuristics and "
       "gather\ndata relevant to the study of their performance from an anytime "
       "perspective\nin the context of pmnk-landscapes problem.\n",
       "anytime-pmnk-landscapes");
@@ -476,7 +483,7 @@ int main(int argc, char **argv) {
   std::size_t maxeval;
   unsigned int seed = std::random_device()();
   std::string outfile;
-  ObjectiveVector ref;
+  apmnkl::objective_vector ref;
   set_general_options(app, maxeval, seed, outfile, ref);
 
   // App Parse Complete Callback (DEBUG)
@@ -520,8 +527,8 @@ int main(int argc, char **argv) {
           ->group("Algorithms");
 
   // PLS Subcommand Options
-  auto pls_acceptance_criterion = PLSAcceptanceCriterion::NON_DOMINATING;
-  auto pls_neighborhood_exploration = PLSExplorationCriterion::BEST_IMPROVEMENT;
+  auto pls_acceptance_criterion = apmnkl::pls::pac::non_dominating;
+  auto pls_neighborhood_exploration = apmnkl::pls::pne::best_improvement;
   set_pls_options(*pls_subcommand, pls_acceptance_criterion, pls_neighborhood_exploration);
 
   // PLS Callback (DEBUG)
@@ -662,16 +669,14 @@ int main(int argc, char **argv) {
       pls(instance, maxeval, seed, pls_acceptance_criterion, pls_neighborhood_exploration, os, ref);
 
     } else if (app.got_subcommand("IBEA")) {
-      Indicator indicator =
-          ibea_subcommand->got_subcommand("IHD") ? Indicator::IHD : Indicator::EPS;
-      Mutation mutation =
-          ibea_subcommand->got_subcommand("UM") ? Mutation::UM : static_cast<Mutation>(-1);
-      Crossover crossover = ibea_subcommand->got_subcommand("NPC") ? Crossover::NPC : Crossover::UC;
-      Selection selection =
-          ibea_subcommand->got_subcommand("KWT") ? Selection::KWT : static_cast<Selection>(-1);
+      indicator ind = ibea_subcommand->got_subcommand("IHD") ? indicator::ihd : indicator::eps;
+      mutation mut =
+          ibea_subcommand->got_subcommand("UM") ? mutation::um : static_cast<mutation>(-1);
+      crossover cross = ibea_subcommand->got_subcommand("NPC") ? crossover::npc : crossover::uc;
+      selection sel =
+          ibea_subcommand->got_subcommand("KWT") ? selection::kwt : static_cast<selection>(-1);
       ibea(instance, maxeval, seed, pop, gen, factor, mutation_probability, crossover_probability,
-           npoints, matting_pool_size, tournament_size, indicator, crossover, mutation, selection,
-           adaptive, os, ref);
+           npoints, matting_pool_size, tournament_size, ind, cross, mut, sel, adaptive, os, ref);
     }
   });
 

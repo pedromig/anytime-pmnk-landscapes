@@ -5,9 +5,9 @@
  * @brief Project Utility functions.
  * @version 0.1.0
  * @date 13-09-2021
- * 
+ *
  * @copyright Copyright (c) 2021
- * 
+ *
  */
 
 #ifndef UTILS_HPP
@@ -15,17 +15,19 @@
 
 #include "solution.hpp"
 
-namespace pmnk {
+namespace apmnkl {
+
+namespace priv {
 
 /**
- * @brief Utility function resposible for maintaining a 
+ * @brief Utility function resposible for maintaining a
  *        container of non-dominated solutions
- * 
+ *
  * @tparam Vec The type for the container holding the solutions.
  * @tparam S The type for a solution to be added to the solution container.
  * @param solutions The container for the non-dominated solutions.
  * @param solution The solution to be added to the container.
- * @return true If the solution was successfully added to the container 
+ * @return true If the solution was successfully added to the container
  * @return false If the solution to be added is dominated by other solution already
  *               present and failed to be inserted.
  */
@@ -33,7 +35,7 @@ template <typename Vec, typename S>
 bool add_non_dominated(Vec &solutions, S &&solution) {
   for (std::size_t i = 0; i < solutions.size();) {
     auto d = solution.dominance(solutions[i]);
-    if (d == DominanceType::EQUAL) {
+    if (d == dominance_type::equal) {
       if (solution.decision_vector() == solutions[i].decision_vector()) {
         return false;
       } else {
@@ -44,10 +46,10 @@ bool add_non_dominated(Vec &solutions, S &&solution) {
         }
         break;
       }
-    } else if (d == DominanceType::DOMINATES) {
+    } else if (d == dominance_type::dominates) {
       solutions[i] = std::move(solutions.back());
       solutions.pop_back();
-    } else if (d == DominanceType::DOMINATED) {
+    } else if (d == dominance_type::dominated) {
       return false;
     } else {
       ++i;
@@ -56,5 +58,6 @@ bool add_non_dominated(Vec &solutions, S &&solution) {
   solutions.push_back(std::forward<S>(solution));
   return true;
 }
-}  // namespace pmnk
+}  // namespace priv
+}  // namespace apmnkl
 #endif  // UTILS_HPP

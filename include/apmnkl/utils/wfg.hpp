@@ -17,11 +17,13 @@
 
 // This code assumes maximizing objective functions
 
-namespace pmnk {
+namespace apmnkl {
+
+namespace priv {
 
 /**
  * @brief Check pareto weakly dominance between two points.
- * 
+ *
  * @tparam T  The type for the point being supplied as a parameter.
  * @param lhs The first point (left hand side point)
  * @param lhs The second point (left hand side point)
@@ -39,11 +41,11 @@ auto weakly_dominates(T const& lhs, T const& rhs) {
 }
 
 /**
- * @brief Insert a point (solution) into a non dominated (solution) 
+ * @brief Insert a point (solution) into a non dominated (solution)
  *        set of points
- * 
+ *
  * @tparam T  The type for the point being supplied as a parameter.
- * @param sol The point (solution) to be added to the set 
+ * @param sol The point (solution) to be added to the set
  * @param set The (solution) set of non dominated points (solutions)
  */
 template <typename T>
@@ -64,13 +66,13 @@ void insert_non_dominated(T&& sol, std::vector<T>& set) {
 }
 
 /**
- * @brief Limit the set of points by replacing them with the points 
- * whose value in each objective is limited to be no better than the 
+ * @brief Limit the set of points by replacing them with the points
+ * whose value in each objective is limited to be no better than the
  * contributing point
- * 
+ *
  * @tparam Iter The type for and iterator of a set of points
  * @tparam T The type for the contributing point being supplied as a parameter
- * @param begin An iterator for the begining of the set 
+ * @param begin An iterator for the begining of the set
  * @param end An iterator for the end of the set
  * @param sol The contributing solution
  * @return auto The limited set
@@ -91,7 +93,7 @@ auto limit_set(Iter begin, Iter end, T const& sol) {
 
 /**
  * @brief Compute hypervolume of a point in relation to a reference.
- * 
+ *
  * @tparam T The type for the point being supplied as a parameter
  * @tparam R The type for the reference being supplied as a parameter
  * @param p The point whose hypervolume value is to be computed
@@ -110,12 +112,12 @@ auto point_hv(T const& p, R const& r) {
 /**
  * @brief Compute a set hypervolume value given a reference point
  *        using the wfg algorithm. (Worker function)
- * 
+ *
  * @tparam S The type for the set supplied as a parameter
  * @tparam T The type for the point being supplied as a parameter
  * @param s The solution set
  * @param ref  The reference point.
- * @return std::common_type_t<typename S::value_type::value_type, typename T::value_type> 
+ * @return std::common_type_t<typename S::value_type::value_type, typename T::value_type>
  * The resulting set hypervolume value.
  */
 template <typename S, typename T>
@@ -132,12 +134,12 @@ std::common_type_t<typename S::value_type::value_type, typename T::value_type> s
 /**
  * @brief Compute a set hypervolume value given a reference point
  *        using the wfg algorithm. (Wrapper function)
- * 
+ *
  * @tparam S The type for the set supplied as a parameter
  * @tparam T The type for the point being supplied as a parameter
  * @param s The solution set
  * @param ref  The reference point.
- * @return std::common_type_t<typename S::value_type::value_type, typename T::value_type> 
+ * @return std::common_type_t<typename S::value_type::value_type, typename T::value_type>
  * The resulting set hypervolume value.
  */
 template <typename S, typename T>
@@ -153,7 +155,7 @@ auto set_hv(S const& s, T const& ref) {
 
 /**
  * @brief Calculate a point hypervolume contribution to a set.
- * 
+ *
  * @tparam S The type for the set supplied as a parameter.
  * @tparam T The type for the point being supplied as a parameter.
  * @tparam R The type for the reference point supplied as a parameter.
@@ -173,7 +175,8 @@ auto point_hvc(T const& p, S const& s, R const& ref) {
   return point_hv(p, ref) - set_hv_wfg(limit_set(v.begin(), v.end(), p), ref);
 }
 
-/// Implementation of an API that supports among others, set/point hypervolume calculations (using the WFG algorithm)
+/// Implementation of an API that supports among others, set/point hypervolume calculations (using
+/// the WFG algorithm)
 template <typename T>
 class [[nodiscard]] hvobj {
  public:
@@ -324,7 +327,7 @@ class [[nodiscard]] hvobj {
 
       auto tmp = array2_t{p[1], p[2]};
       auto it = std::lower_bound(aux.begin(), aux.end(), tmp,
-                                 [](auto const& a, auto const& b) { return a[1] > b[1]; });
+                                 [](auto const& x, auto const& y) { return x[1] > y[1]; });
       auto jt = it;
 
       auto r0 = (*std::prev(it))[0];
@@ -391,5 +394,6 @@ class [[nodiscard]] hvobj {
   ovec_type m_ref;
 };
 
-}  // namespace pmnk
+}  // namespace priv
+}  // namespace apmnkl
 #endif  // WFG_H
