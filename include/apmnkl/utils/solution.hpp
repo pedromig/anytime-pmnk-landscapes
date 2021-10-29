@@ -159,7 +159,6 @@ class solution {
     for (auto const &i : solution.objective_vector()) {
       os << i << " ";
     }
-    os << "\n";
     return os;
   }
 
