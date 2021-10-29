@@ -162,7 +162,7 @@ include(GNUInstallDirs)
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/include" DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 # The library is an install target
-install(TARGETS ${APMNKL-LIB} EXPORT ${APMNKL-LIB}-targets)
+install(TARGETS ${APMNKL-LIB} EXPORT ${APMNKL-LIB})
 
 # Install directories for install targets
 include(GNUInstallDirs)
@@ -177,9 +177,9 @@ install(
 )
 
 install(
-  EXPORT ${APMNKL-LIB}-targets
+  EXPORT ${APMNKL-LIB}
   NAMESPACE ${APMNKL-LIB}::
-  FILE ${APMNKL-LIB}-targets.cmake
+  FILE ${APMNKL-LIB}-config.cmake
   DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${APMNKL-LIB}"
 )
 
@@ -187,7 +187,7 @@ install(
 export(
   TARGETS ${APMNKL-LIB}
   NAMESPACE ${APMNKL-LIB}::
-  FILE ${APMNKL-LIB}-targets.cmake
+  FILE ${APMNKL-LIB}-config.cmake
 )
 
 # Register in the user cmake package registry
