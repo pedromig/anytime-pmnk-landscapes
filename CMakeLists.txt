@@ -4,6 +4,13 @@ if(${CMAKE_VERSION} VERSION_LESS 3.11)
   cmake_policy(VERSION ${CMAKE_MINOR_VERSION}.${CMAKE_MAJOR_VERSION})
 endif()
 
+# Check if this project is a dependency of another
+if (NOT DEFINED PROJECT_NAME)
+  set(APMNKL_MASTER_PROJECT ON)
+else()
+  set(APMNKL_MASTER_PROJECT OFF)
+endif()
+
 # Define project properties
 project(
   APMNKL
@@ -13,34 +20,35 @@ project(
                heuristics for the pmnk-landscapes problem."
 )
 
-# Turn off C++ extensions
-set(CMAKE_CXX_EXTENSIONS OFF)
-
-# Create compile commands json for clang tools
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+if (APMNKL_MASTER_PROJECT)
+  # Turn off C++ extensions
+  set(CMAKE_CXX_EXTENSIONS OFF)
+  # Create compile commands json for clang tools
+  set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+endif()
 
 # FetchContent_MakeAvailable implementation for cmake versions prior to 3.14
 include(FetchContent)
 if(${CMAKE_VERSION} VERSION_LESS 3.14)
   macro(FetchContent_MakeAvailable NAME)
-    fetchcontent_getproperties(${NAME})
+    FetchContent_GetProperties(${NAME})
     if(NOT ${NAME}_POPULATED)
-      fetchcontent_populate(${NAME})
+      FetchContent_Populate(${NAME})
       add_subdirectory(${${NAME}_SOURCE_DIR} ${${NAME}_BINARY_DIR})
     endif()
   endmacro()
 endif()
 
 # Get target dependency (CLI11)
-fetchcontent_declare(
+FetchContent_Declare(
   CLI11
   GIT_REPOSITORY https://github.com/CLIUtils/CLI11.git
   GIT_TAG v2.1.2
 )
-fetchcontent_makeavailable(CLI11)
+FetchContent_MakeAvailable(CLI11)
 
 # Library documentation
-option(APMNKL_BUILD_DOCS "Build documentation" ON)
+option(APMNKL_BUILD_DOCS "Build documentation" ${APMNKL_MASTER_PROJECT})
 
 if(CMAKE_BUILD_TYPE MATCHES "^[Rr]elease")
   find_package(Doxygen)
@@ -156,10 +164,22 @@ install(DIRECTORY "${PROJECT_SOURCE_DIR}/include" DESTINATION ${CMAKE_INSTALL_IN
 # The library is an install target
 install(TARGETS ${APMNKL-LIB} EXPORT ${APMNKL-LIB}-targets)
 
+# Install directories for install targets
+include(GNUInstallDirs)
+
+install(
+  TARGETS ${APMNKL-LIB} 
+  EXPORT ${APMNKL-LIB}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+  INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
+
 install(
   EXPORT ${APMNKL-LIB}-targets
-  FILE ${APMNKL-LIB}-config.cmake
   NAMESPACE ${APMNKL-LIB}::
+  FILE ${APMNKL-LIB}-targets.cmake
   DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${APMNKL-LIB}"
 )
 
@@ -173,12 +193,14 @@ export(
 # Register in the user cmake package registry
 export(PACKAGE ${APMNKL-LIB})
 
-# Anytime pmnk-landscapes sample app (app.cpp) for testing implemented features.
-set(APP anytime-pmnk-landscapes)
+if (APMNKL_MASTER_PROJECT)
+  # Anytime pmnk-landscapes sample app (app.cpp) for testing implemented features.
+  set(APP anytime-pmnk-landscapes)
 
-add_executable(${APP} "${PROJECT_SOURCE_DIR}/apps/app.cpp")
-target_compile_features(${APP} PRIVATE cxx_std_17)
-target_compile_options(${APP} PRIVATE ${PROJECT_WARNINGS})
+  add_executable(${APP} "${PROJECT_SOURCE_DIR}/apps/app.cpp")
+  target_compile_features(${APP} PRIVATE cxx_std_17)
+  target_compile_options(${APP} PRIVATE ${PROJECT_WARNINGS})
 
-target_link_libraries(${APP} PRIVATE ${APMNKL-LIB})
-target_link_libraries(${APP} PRIVATE CLI11::CLI11)
+  target_link_libraries(${APP} PRIVATE ${APMNKL-LIB})
+  target_link_libraries(${APP} PRIVATE CLI11::CLI11)
+endif()
