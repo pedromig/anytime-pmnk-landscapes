@@ -2,7 +2,8 @@
  * @file wfg.hpp
  * @author Alexandre Jesus (ajesus@dei.uc.pt)
  * @brief Implementation of the wfg algorithm to calculate hypervolumes
- * @date 13-09-2021
+ * @version 0.2.0
+ * @date 29-10-2021
  * @copyright Copyright (c) 2021
  */
 

@@ -7,8 +7,8 @@
  *        of the library, while also simplifing the gathering of anytime data
  *        relevant to the study of the performance of the implemented algorithms
  *        in the context of the pmnk-landscapes problem.
- * @version 0.1.0
- * @date 13-09-2021
+ * @version 0.2.0
+ * @date 29-10-2021
  *
  * @copyright Copyright (c) 2021
  *

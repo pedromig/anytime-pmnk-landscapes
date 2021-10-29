@@ -3,8 +3,8 @@
  * @author Pedro Rodrigues (pedror@student.dei.uc.pt)
  * @author Alexandre Jesus (ajesus@dei.uc.pt)
  * @brief Implementation of IBEA operators (using functors)
- * @version 0.1.0
- * @date 13-09-2021
+ * @version 0.2.0
+ * @date 29-10-2021
  *
  * @copyright Copyright (c) 2021
  *

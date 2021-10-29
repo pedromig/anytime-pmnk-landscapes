@@ -7,7 +7,7 @@ endif()
 # Define project properties
 project(
   APMNKL
-  VERSION 0.1.0
+  VERSION 0.2.0
   LANGUAGES CXX
   DESCRIPTION "Library providing implementations of search \
                heuristics for the pmnk-landscapes problem."
